@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="dark_blue">#026996</color>
+    <color name="green_color">#709D03</color>
+    <color name="dark_grey">#3D3D3D</color>
+    <color name="light_grey">#ff8a8a8a</color>
+    <color name="grey_e4">#e4e4e4</color>
+    <color name="grey_c8">#C8C8C8</color>
+    <color name="grey_f1">#F1F1F1</color>
+    <color name="grey_f2">#F2F2F2</color>
+    <color name="grey_6a">#6a6a69</color>
+    <color name="grey_78">#787878</color>
+    <color name="grey_4d">#4d4d4d</color>
+    <color name="medium_grey">#727272</color>
+    <color name="tabDark">#000000</color>
+    <color name="red">#E10000</color>
+    <color name="dark_red">#9A2722</color>
+    <color name="dark_green">#ff14a209</color>
+    <color name="white">#ffffff</color>
+    <color name="translucent_white">#BBffffff</color>
+    <color name="white_60p">#99FFFFFF</color>
+    <color name="strokeLine">#d1d2d3</color>
+    <color name="redColor">#ba5253</color>
+    <color name="promo_txt_green_color">#2E9B57</color>
+    <color name="active_order_red_color">#ed5353</color>
+    <color name="dark_black">#000000</color>
+
+    <color name="primary_text_color">#5F5F5F</color>
+    <color name="secondary_text_color">#929292</color>
+
+    <color name="primary">#9dc73d</color>
+    <color name="primary_dark">#6CAF15</color>
+    <color name="primary_button_text">#9DC73D</color>
+    <color name="primary_button_text_disabled">#4D9DC73D</color>
+    <color name="accent">#454543</color>
+    <color name="primary_button_background">#454543</color>
+    <color name="primary_button_background_pressed">#66454543</color>
+    <color name="secondary_button_stroke">#AAAAAA</color>
+    <color name="secondary_button_stroke_pressed">#66AAAAAA</color>
+    <color name="secondary_button_stroke_disabled">#1EAAAAAA</color>
+    <color name="divider_color">#D7D7D7</color>
+    <color name="login_fields_color">#9d9d9d</color>
+    <color name="login_field_hint_color">#c7c7c7</color>
+    <color name="basket_count_color">#9b9b9b</color>
+    <color name="out_of_stock_color">#ef2216</color>
+    <color name="link_color">@color/accent</color>
+    <color name="uiv3_link_color">@color/accent</color>
+    <color name="uiv3_combo_offer_button_color_pressed">#4D6a6a69</color>
+    <color name="uiv3_error_red">#e92027</color>
+    <color name="filter_layout_back">#bcbcbc</color>
+    <color name="cancel_order_background">#efefef</color>
+    <color name="filter_category_background">#c7c7c7</color>
+    <color name="white_scrim">#B3FFFFFF</color>
+    <color name="uiv3_product_mrp_text_color">#a4a6a3</color>
+    <color name="uiv3_combo_offer_header_color">#fff59d</color>
+
+    <color name="uiv3_address_input_color">#515151</color>
+    <color name="uiv3_secondary_text_color">#929292</color>
+</resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layoutBtn"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnSelectSignature"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal"
+            android:text="@string/save"
+            android:textColor="@color/white"
+            android:layout_marginRight="@dimen/margin_mini"
+            android:paddingTop="@dimen/margin_small"
+            android:textSize="@dimen/primary_text_size" />
+
+        <Button
+            android:id="@+id/btnClearSignature"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/margin_mini"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal"
+            android:text="@string/clear"
+            android:textColor="@color/white"
+            android:paddingTop="@dimen/margin_small"
+            android:textSize="@dimen/primary_text_size" />
+
+
+
+    </LinearLayout>
+
+
+
+    <visitor.app.com.visitormanagement.view.SignatureView
+        android:id="@+id/signatureView"
+        android:layout_above="@id/layoutBtn"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="match_parent" />
+
+
+
+</RelativeLayout>

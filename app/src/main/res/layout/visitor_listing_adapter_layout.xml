@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <RelativeLayout
+        android:id="@+id/layoutImg"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgVisitor"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+
+        <ImageView
+            android:id="@+id/imgSignature"
+            android:layout_alignRight="@id/imgVisitor"
+            android:layout_alignLeft="@id/imgVisitor"
+            android:layout_width="80dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="@dimen/margin_mini"
+            android:layout_below="@id/imgVisitor"
+            android:layout_height="30dp" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/layoutDetail"
+        android:layout_margin="@dimen/margin_small"
+        android:layout_toRightOf="@id/layoutImg"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_width="match_parent"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:id="@+id/txtVisitorName"
+            android:text="Jugal Joshi"
+            android:layout_width="match_parent"
+            android:textSize="@dimen/primary_text_size"
+            android:textColor="@color/dark_black"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:id="@+id/layoutNumber"
+            android:layout_below="@id/txtVisitorName"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/margin_mini"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtPhoneNumber"
+                android:text="9900965282"
+                android:textSize="@dimen/secondary_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_width="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txtVehicleNumber"
+                android:text="KA A1-898980"
+                android:textSize="@dimen/secondary_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutPlace"
+            android:layout_below="@id/layoutNumber"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtFrom"
+                android:text="Dehradun"
+                android:textSize="@dimen/secondary_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_width="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:id="@+id/txtDestination"
+                android:text="Bangalore"
+                android:textSize="@dimen/secondary_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutTime"
+            android:layout_below="@id/layoutPlace"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtInTime"
+                android:text="12:30 pm"
+                android:textSize="@dimen/secondary_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txtOutTime"
+                android:text="05:30 pm"
+                android:textSize="@dimen/secondary_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/light_grey"
+        />
+
+</RelativeLayout>
