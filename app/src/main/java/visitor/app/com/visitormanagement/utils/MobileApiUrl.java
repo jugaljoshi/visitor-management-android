@@ -5,7 +5,7 @@ package visitor.app.com.visitormanagement.utils;
  */
 public final class MobileApiUrl {
     public static final String API_PATH = "/mapi/v1.0.0/";
-    public static final String DOMAIN_NAME = "http://192.168.1.104:8080";
+    public static final String DOMAIN_NAME = "http://192.168.1.100:8080";
 
     private MobileApiUrl() {
     }
@@ -14,3 +14,9 @@ public final class MobileApiUrl {
         return DOMAIN_NAME + API_PATH;
     }
 }
+
+/*
+Once you eliminate the impossible, whatever remains, no matter how improbable, must be the truth.
+Start by doing what's necessary, then do what's possible, and suddenly you are doing the impossible.
+
+ */

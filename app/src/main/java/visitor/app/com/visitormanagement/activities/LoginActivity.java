@@ -28,19 +28,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import visitor.app.com.visitormanagement.R;
 import visitor.app.com.visitormanagement.interfaces.ApiService;
 import visitor.app.com.visitormanagement.models.ApiResponse;
-import visitor.app.com.visitormanagement.models.City;
 import visitor.app.com.visitormanagement.models.LoginApiResponse;
 import visitor.app.com.visitormanagement.utils.ApiAdapter;
 import visitor.app.com.visitormanagement.utils.Constants;

@@ -26,14 +26,14 @@ import visitor.app.com.visitormanagement.utils.UIUtil;
  */
 public class VisitorListingActivity extends BaseActivity {
 
-    private WorkBookModel workBookModel;
+    private String wbId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visitor_listing_layout);
-        workBookModel = getIntent().getParcelableExtra(Constants.VISITOR_INTENT);
-        if(workBookModel == null) return;
-        getVisitorData(workBookModel.getWbId());
+        wbId = getIntent().getStringExtra(Constants.WB_ID);
+        if(UIUtil.isEmpty(wbId)) return;
+        getVisitorData(wbId);
     }
 
     private void getVisitorData(String wbId){
@@ -44,7 +44,8 @@ public class VisitorListingActivity extends BaseActivity {
 
         showProgressDialog(getString(R.string.please_wait), true);
         ApiService apiService = ApiAdapter.getApiService(this);
-        Call<ApiResponse<ArrayList<VisitorModel>>> call = apiService.getVisitors(wbId);
+        String queryName = getIntent().getStringExtra(Constants.NAME);
+        Call<ApiResponse<ArrayList<VisitorModel>>> call = apiService.getVisitors(wbId, queryName);
         call.enqueue(new NetworkCallback<ApiResponse<ArrayList<VisitorModel>>>(this) {
             @Override
             public void onSuccess(ApiResponse<ArrayList<VisitorModel>> workbookResponse) {
@@ -80,9 +81,9 @@ public class VisitorListingActivity extends BaseActivity {
 
 
     public void onCreateVisitorBtnClicked(View view){
-        if (workBookModel == null || UIUtil.isEmpty(workBookModel.getWbId())) return;
+        if (UIUtil.isEmpty(wbId)) return;
         Intent createWorkBookIntent = new Intent(this, CreateVisitorActivity.class);
-        createWorkBookIntent.putExtra(Constants.WB_ID, workBookModel.getWbId());
+        createWorkBookIntent.putExtra(Constants.WB_ID, wbId);
         startActivityForResult(createWorkBookIntent, NavigationCodes.RC_GOTO_HOME);
     }
 

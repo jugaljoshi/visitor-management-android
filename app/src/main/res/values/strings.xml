@@ -58,6 +58,8 @@
     <string name="select_visitor_mandatory">Please select visitor\'s fields, that you need as mandatory!</string>
     <string name="v_image_n_sign_mandatory">Image and Signature is mandatory!</string>
     <string name="client_error">Something went wrong on client side, Please try again later!</string>
+    <string name="hint_search">Search by name</string>
+    <string name="search">Search</string>
 
 
 

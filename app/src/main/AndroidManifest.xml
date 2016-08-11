@@ -43,10 +43,14 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:label="@string/workbook_home">
+            <meta-data android:name="android.app.default_searchable"
+                android:value=".activities.SearchActivity" />
+
         </activity>
 
         <activity
             android:name=".activities.CreateWorkBookActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:label="@string/create_workbook">
         </activity>
@@ -60,14 +64,31 @@
 
         <activity
             android:name=".activities.CreateVisitorActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:label="@string/create_visitor">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
         </activity>
 
+        <activity
+            android:name=".activities.SearchActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <provider
+            android:name="visitor.app.com.visitormanagement.contentProvider.SearchSuggestionProvider"
+            android:authorities="${applicationId}.contentProvider.SearchSuggestionProvider"
+            android:enabled="true"
+            android:exported="false"
+            android:multiprocess="true" />
 
     </application>
 

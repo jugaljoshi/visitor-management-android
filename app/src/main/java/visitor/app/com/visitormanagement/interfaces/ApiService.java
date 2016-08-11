@@ -16,6 +16,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 import visitor.app.com.visitormanagement.models.ApiResponse;
+import visitor.app.com.visitormanagement.models.AutoSearchResponse;
 import visitor.app.com.visitormanagement.models.LoginApiResponse;
 import visitor.app.com.visitormanagement.models.VisitorModel;
 import visitor.app.com.visitormanagement.models.WorkBookModel;
@@ -50,7 +51,8 @@ public interface ApiService {
 
 
     @GET("get-visitors/")
-    Call<ApiResponse<ArrayList<VisitorModel>>> getVisitors(@Query(Constants.WB_ID) String workBookType);
+    Call<ApiResponse<ArrayList<VisitorModel>>> getVisitors(@Query(Constants.WB_ID) String workBookType,
+                                                           @Query(Constants.NAME) String name);
 
 
     @Multipart
@@ -60,4 +62,8 @@ public interface ApiService {
     Call<ApiResponse> postVisitor(@Part MultipartBody.Part visitorImageBody,
                                   @Part MultipartBody.Part visitorSignBody,
                                   @Part("params") HashMap<String, String> params); //@FieldMap HashMap<String, String> params
+
+
+    @GET("search-tc/")
+    Call<ApiResponse<ArrayList<AutoSearchResponse>>> getSearchTerms(@Query(Constants.NAME) String name);
 }

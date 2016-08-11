@@ -2,8 +2,11 @@ package visitor.app.com.visitormanagement.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -26,10 +29,28 @@ import visitor.app.com.visitormanagement.utils.NetworkCallback;
 public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClickAware {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page_layout);
         getHomePageData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Intent intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void getHomePageData() {
@@ -82,7 +103,7 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
     @Override
     public void onWorkBookItemClicked(WorkBookModel workBookModel) {
         Intent visitorListingIntent = new Intent(this, VisitorListingActivity.class);
-        visitorListingIntent.putExtra(Constants.VISITOR_INTENT, workBookModel);
+        visitorListingIntent.putExtra(Constants.WB_ID, workBookModel.getWbId());
         startActivity(visitorListingIntent);
     }
 
