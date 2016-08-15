@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.io.File;
@@ -75,17 +76,19 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             editTextDestinationPlace, editTextInTime, editTextOutTime;
     private TextInputLayout textInputName, textInputMobileNumber, textVehicleNumber, textInputFromPlace,
             textInputDestinationPlace, textInputInTime, textInputOutTime;
-    private ImageView visitorImageView, visitorSignImageView;
-    private LinearLayout layoutVisitorForm, layoutSign;
+    private TextView txtViewVisitorPhoto, txtViewVisitorSign;
+    private LinearLayout layoutVisitorForm, layoutSign, layoutPic;
     private String visitorImageFileName, signImageFileName;
     private String wbId;
+    private ArrayList<String> visitorMandatoryFields;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crete_visitor_signature_layout);
         wbId = getIntent().getStringExtra(Constants.WB_ID);
-        if(UIUtil.isEmpty(wbId)) return;
+        visitorMandatoryFields = getIntent().getStringArrayListExtra(Constants.VISITOR_MANDATORY_FIELDS);
+        if(UIUtil.isEmpty(wbId) || visitorMandatoryFields == null || visitorMandatoryFields.size() <= 0) return;
         layoutVisitorForm = (LinearLayout) findViewById(R.id.layoutVisitorForm);
         layoutSign = (LinearLayout) findViewById(R.id.layoutSign);
         showVisitorForm();
@@ -116,15 +119,25 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         layoutVisitorForm.setVisibility(View.VISIBLE);
 
         editTextName = (EditText) createVisitorLayout.findViewById(R.id.editTextName);
+        editTextName.setTag(Constants.NAME);
         editTextMobileNumber = (EditText) createVisitorLayout.findViewById(R.id.editTextMobileNumber);
+        editTextMobileNumber.setTag(Constants.MOBILE_NO);
         editTextVehicleNumber = (EditText) createVisitorLayout.findViewById(R.id.editTextVehicleNumber);
+        editTextVehicleNumber.setTag(Constants.VEHICLE_NO);
         editTextFromPlace = (EditText) createVisitorLayout.findViewById(R.id.editTextFromPlace);
+        editTextFromPlace.setTag(Constants.FROM_PLACE);
         editTextDestinationPlace = (EditText) createVisitorLayout.findViewById(R.id.editTextDestinationPlace);
+        editTextDestinationPlace.setTag(Constants.DESTINATION_PLACE);
         editTextInTime = (EditText) createVisitorLayout.findViewById(R.id.editTextInTime);
+        editTextInTime.setTag(Constants.IN_TIME);
         editTextOutTime = (EditText) createVisitorLayout.findViewById(R.id.editTextOutTime);
+        editTextOutTime.setTag(Constants.OUT_TIME);
 
-        visitorImageView = (ImageView) createVisitorLayout.findViewById(R.id.visitorImageView);
-        visitorSignImageView = (ImageView) createVisitorLayout.findViewById(R.id.visitorSignImageView);
+        layoutPic = (LinearLayout) createVisitorLayout.findViewById(R.id.layoutPic);
+        txtViewVisitorPhoto = (TextView) createVisitorLayout.findViewById(R.id.txtViewVisitorPhoto);
+        txtViewVisitorPhoto.setTag(Constants.V_PHOTO);
+        txtViewVisitorSign = (TextView) createVisitorLayout.findViewById(R.id.txtViewVisitorSign);
+        txtViewVisitorSign.setTag(Constants.V_SIGNATURE_PHOTO);
 
 
         textInputName = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputName);
@@ -132,7 +145,6 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         textVehicleNumber = (TextInputLayout) createVisitorLayout.findViewById(R.id.textVehicleNumber);
         textInputFromPlace = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputFromPlace);
         textInputDestinationPlace = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputDestinationPlace);
-
         textInputInTime = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputInTime);
         textInputOutTime = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputOutTime);
 
@@ -153,7 +165,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
                 if (signatureView.signatureDrawn) {
                     String filePath = ImageUtil.storeBitMapToFile(signatureView.mBitmap, "signature");
                     if (!UIUtil.isEmpty(filePath)) {
-                        SampleImageTask sampleImageTask = new SampleImageTask(filePath, visitorSignImageView, true);
+                        SampleImageTask sampleImageTask = new SampleImageTask(filePath, txtViewVisitorSign, true);
                         sampleImageTask.execute();
                     } else {
                         showToast("Sorry! Failed to capture signature");
@@ -258,7 +270,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
                 Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                 String filePath = ImageUtil.storeBitMapToFile(bitmap, "visitor");
                 if (!UIUtil.isEmpty(filePath)) {
-                    SampleImageTask sampleImageTask = new SampleImageTask(filePath, visitorImageView, false);
+                    SampleImageTask sampleImageTask = new SampleImageTask(filePath, txtViewVisitorPhoto, false);
                     sampleImageTask.execute();
                     //setPic(filePath);
                 } else {
@@ -275,7 +287,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             Bitmap signatureBitMapData = data.getParcelableExtra(Constants.SIGN_IMAGE_BYTE_DATA);
             String filePath = ImageUtil.storeBitMapToFile(signatureBitMapData, "signature");
             if (!UIUtil.isEmpty(filePath)) {
-                SampleImageTask sampleImageTask = new SampleImageTask(filePath, visitorSignImageView, true);
+                SampleImageTask sampleImageTask = new SampleImageTask(filePath, txtViewVisitorSign, true);
                 sampleImageTask.execute();
                 //setPic(filePath);
             } else {
@@ -345,53 +357,68 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         // Validation
         boolean cancel = false;
         View focusView = null;
-        if (isEditTextEmpty(editTextName)) {
-            UIUtil.reportFormInputFieldError(textInputName, getString(R.string.error_field_required));
-            focusView = editTextName;
-            cancel = true;
-        }
-        if (!UIUtil.isAlphaString(editTextName.getText().toString().trim())) {
-            cancel = true;
-            if (focusView == null) focusView = editTextName;
-            UIUtil.reportFormInputFieldError(textInputName, getString(R.string.error_field_name));
-        }
-        if (isEditTextEmpty(editTextMobileNumber)) {
-            UIUtil.reportFormInputFieldError(textInputMobileNumber, getString(R.string.error_field_required));
-            if (focusView == null)
-                focusView = editTextMobileNumber;
-            cancel = true;
-        } else if (editTextMobileNumber.getText().toString().length() < 10) {
-            UIUtil.reportFormInputFieldError(textInputMobileNumber, getString(R.string.contactNoMin10));
-            if (focusView == null)
-                focusView = editTextMobileNumber;
-            cancel = true;
-        }
-        if (isEditTextEmpty(editTextFromPlace)) {
-            UIUtil.reportFormInputFieldError(textInputFromPlace, getString(R.string.error_field_required));
-            if (focusView == null)
-                focusView = editTextFromPlace;
-            cancel = true;
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextName.getTag()))){
+            if (isEditTextEmpty(editTextName)) {
+                UIUtil.reportFormInputFieldError(textInputName, getString(R.string.error_field_required));
+                focusView = editTextName;
+                cancel = true;
+            }else if (!UIUtil.isAlphaString(editTextName.getText().toString().trim())) {
+                cancel = true;
+                if (focusView == null) focusView = editTextName;
+                UIUtil.reportFormInputFieldError(textInputName, getString(R.string.error_field_name));
+            }
         }
 
-        if (isEditTextEmpty(editTextDestinationPlace)) {
-            UIUtil.reportFormInputFieldError(textInputDestinationPlace, getString(R.string.error_field_required));
-            if (focusView == null)
-                focusView = editTextDestinationPlace;
-            cancel = true;
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextMobileNumber.getTag()))){
+            if (isEditTextEmpty(editTextMobileNumber)) {
+                UIUtil.reportFormInputFieldError(textInputMobileNumber, getString(R.string.error_field_required));
+                if (focusView == null)
+                    focusView = editTextMobileNumber;
+                cancel = true;
+            } else if (editTextMobileNumber.getText().toString().length() < 10) {
+                UIUtil.reportFormInputFieldError(textInputMobileNumber, getString(R.string.contactNoMin10));
+                if (focusView == null)
+                    focusView = editTextMobileNumber;
+                cancel = true;
+            }
         }
 
-        if (isEditTextEmpty(editTextInTime)) {
-            UIUtil.reportFormInputFieldError(textInputInTime, getString(R.string.error_field_required));
-            if (focusView == null)
-                focusView = editTextInTime;
-            cancel = true;
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextFromPlace.getTag()))){
+            if (isEditTextEmpty(editTextFromPlace)) {
+                UIUtil.reportFormInputFieldError(textInputFromPlace, getString(R.string.error_field_required));
+                if (focusView == null)
+                    focusView = editTextFromPlace;
+                cancel = true;
+            }
         }
 
-        if (isEditTextEmpty(editTextOutTime)) {
-            UIUtil.reportFormInputFieldError(textInputOutTime, getString(R.string.error_field_required));
-            if (focusView == null)
-                focusView = editTextOutTime;
-            cancel = true;
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextDestinationPlace.getTag()))){
+            if (isEditTextEmpty(editTextDestinationPlace)) {
+                UIUtil.reportFormInputFieldError(textInputDestinationPlace, getString(R.string.error_field_required));
+                if (focusView == null)
+                    focusView = editTextDestinationPlace;
+                cancel = true;
+            }
+        }
+
+
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextInTime.getTag()))){
+            if (isEditTextEmpty(editTextInTime)) {
+                UIUtil.reportFormInputFieldError(textInputInTime, getString(R.string.error_field_required));
+                if (focusView == null)
+                    focusView = editTextInTime;
+                cancel = true;
+            }
+
+        }
+
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextOutTime.getTag()))){
+            if (isEditTextEmpty(editTextOutTime)) {
+                UIUtil.reportFormInputFieldError(textInputOutTime, getString(R.string.error_field_required));
+                if (focusView == null)
+                    focusView = editTextOutTime;
+                cancel = true;
+            }
         }
 
         if (cancel) {
@@ -399,8 +426,13 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             return;
         }
 
-        if(UIUtil.isEmpty(visitorImageFileName) || UIUtil.isEmpty(signImageFileName)){
-            showToast(getString(R.string.v_image_n_sign_mandatory));
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextOutTime.getTag())) && UIUtil.isEmpty(visitorImageFileName)){
+            showToast(getString(R.string.v_image_mandatory));
+            return;
+        }
+
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextOutTime.getTag())) && UIUtil.isEmpty(signImageFileName)){
+            showToast(getString(R.string.v_sign_mandatory));
             return;
         }
 
@@ -506,7 +538,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
 
     }
 
-    private void sampleImage(String filePath, ImageView imageView, boolean isSignatureImage) {
+    private void sampleImage(String filePath, TextView textView, boolean isSignatureImage) {
         try {
             Bitmap bmpPic = ImageUtil.getBitmap(filePath, this);
             int compressQuality = 100; //PNG is a lossless format
@@ -520,8 +552,9 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
                 }else {
                     visitorImageFileName = filePath;
                 }
+                textView.setText(filePath);
             }
-            imageView.setImageBitmap(bmpPic);
+
         } catch (Exception e) {
 
         }
@@ -562,12 +595,12 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
     public class SampleImageTask extends AsyncTask<String, Void, Void> {
 
         private String path;
-        private ImageView imageView;
+        private TextView textView;
         private boolean isSignatureImage;
 
-        public SampleImageTask(String path, ImageView imageView, boolean isSignatureImage) {
+        public SampleImageTask(String path, TextView textView, boolean isSignatureImage) {
             this.path = path;
-            this.imageView = imageView;
+            this.textView = textView;
             this.isSignatureImage = isSignatureImage;
         }
 
@@ -591,6 +624,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             }
             layoutVisitorForm.setVisibility(View.VISIBLE);
             layoutSign.setVisibility(View.GONE);
+            layoutPic.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -598,7 +632,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             if (isCancelled()) {
                 return null;
             }
-            sampleImage(path, imageView, isSignatureImage);
+            sampleImage(path, textView, isSignatureImage);
 
             return null;
         }

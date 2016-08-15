@@ -23,6 +23,7 @@ public class VisitorModel implements Parcelable {
             return new VisitorModel[size];
         }
     };
+
     @SerializedName(Constants.V_PHOTO)
     private String visitorImg;
     @SerializedName(Constants.NAME)

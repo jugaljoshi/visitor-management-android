@@ -90,10 +90,6 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         if (recyclerView == null ||  workBookModelArrayList == null) return;
 
-        for(int i=0; i<4; i++) {
-            workBookModelArrayList.add(workBookModelArrayList.get(i));
-        }
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         WorkBookHomePageAdapter homePageAdapter = new WorkBookHomePageAdapter<>(this, workBookModelArrayList);
         recyclerView.setAdapter(homePageAdapter);
@@ -104,6 +100,7 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
     public void onWorkBookItemClicked(WorkBookModel workBookModel) {
         Intent visitorListingIntent = new Intent(this, VisitorListingActivity.class);
         visitorListingIntent.putExtra(Constants.WB_ID, workBookModel.getWbId());
+        visitorListingIntent.putStringArrayListExtra(Constants.VISITOR_MANDATORY_FIELDS, workBookModel.getVisitorMandatoryFields());
         startActivity(visitorListingIntent);
     }
 

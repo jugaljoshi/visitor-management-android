@@ -62,6 +62,7 @@ public class ImageUtil {
             inWidth = options.outWidth;
             inHeight = options.outHeight;
 
+            /*
             int dstHeight = inWidth;
             int dstWidth = inHeight;
             int imageSizeInMB = (dstHeight * dstWidth) / (1024 * 1024);
@@ -74,6 +75,9 @@ public class ImageUtil {
                 dstWidth -= 10;
                 imageSizeInMB = (dstHeight * dstWidth) / (1024 * 1024);
             }
+            */
+            int dstHeight = 150;
+            int dstWidth = 150;
 
             // decode full image pre-resized
             in = new FileInputStream(pathOfInputImage);

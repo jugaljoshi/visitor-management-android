@@ -56,7 +56,8 @@
     <string name="select_workbook_type">Please select workbook type</string>
     <string name="error_while_getting_data">Error while getting workbook type data</string>
     <string name="select_visitor_mandatory">Please select visitor\'s fields, that you need as mandatory!</string>
-    <string name="v_image_n_sign_mandatory">Image and Signature is mandatory!</string>
+    <string name="v_sign_mandatory">Visitor signature is mandatory!</string>
+    <string name="v_image_mandatory">Visitor photo is mandatory!</string>
     <string name="client_error">Something went wrong on client side, Please try again later!</string>
     <string name="hint_search">Search by name</string>
     <string name="search">Search</string>

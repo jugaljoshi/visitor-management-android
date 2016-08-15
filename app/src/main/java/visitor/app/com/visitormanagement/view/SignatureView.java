@@ -36,7 +36,7 @@ public class SignatureView extends View {
     int height;
     boolean drawSignatureText =false;
     public boolean signatureDrawn = false;
-    boolean misPinExistsForCard = false;
+    //boolean misPinExistsForCard = false;
 
     public SignatureView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -75,21 +75,21 @@ public class SignatureView extends View {
         // smooth's out the edges of what is being drawn
         mBitmapPaint.setAntiAlias(true);
         drawSignatureText = true;
-        mCanvas.drawRect(0, 0 , mCanvas.getWidth() , 1,mBitmapPaint);
-        mCanvas.drawRect(0, 0 , 1 , mCanvas.getHeight() ,mBitmapPaint);
-        mCanvas.drawRect(0,mCanvas.getHeight()-1, mCanvas.getWidth() , mCanvas.getHeight()  , mBitmapPaint);
-        mCanvas.drawRect(mCanvas.getWidth() -1, 0 , mCanvas.getWidth() ,mCanvas.getHeight() , mBitmapPaint);
+//        mCanvas.drawRect(0, 0 , mCanvas.getWidth() , 1,mBitmapPaint);
+//        mCanvas.drawRect(0, 0 , 1 , mCanvas.getHeight() ,mBitmapPaint);
+//        mCanvas.drawRect(0,mCanvas.getHeight()-1, mCanvas.getWidth() , mCanvas.getHeight()  , mBitmapPaint);
+//        mCanvas.drawRect(mCanvas.getWidth() -1, 0 , mCanvas.getWidth() ,mCanvas.getHeight() , mBitmapPaint);
 
 
         Rect bounds = new Rect();
-        mBitmapPaint.getTextBounds("Signature", 0, 9, bounds);
+//        mBitmapPaint.getTextBounds("Signature", 0, 9, bounds);
 
         int y = mCanvas.getHeight() - (bounds.height() *2 );
         mBitmapPaint.setColor(Color.LTGRAY);
-        mCanvas.drawRect(15, mCanvas.getHeight() - (bounds.height() * 2), mCanvas.getWidth() -15, mCanvas.getHeight() - ((bounds.height() *2)+1), mBitmapPaint);
+//        mCanvas.drawRect(15, mCanvas.getHeight() - (bounds.height() * 2), mCanvas.getWidth() -15, mCanvas.getHeight() - ((bounds.height() *2)+1), mBitmapPaint);
         //mCanvas.drawText("Signature", mCanvas.getWidth()-(bounds.width()+20), mCanvas.getHeight() - (bounds.height()), mBitmapPaint);
 
-
+/*
         if(misPinExistsForCard) {
             mCanvas.save();
             if((mCanvas.getWidth())<= 400)
@@ -125,6 +125,7 @@ public class SignatureView extends View {
             mBitmapPaint.setTextSize(getResources().getDimension(R.dimen.font_size));
             mCanvas.save();
         }
+        */
 
         //}
 
@@ -163,7 +164,7 @@ public class SignatureView extends View {
     private void touch_up() {
         mPath.lineTo(mX, mY);
         // commit the path to our offscreen
-        if(!misPinExistsForCard)
+        //if(!misPinExistsForCard)
             mCanvas.drawPath(mPath, mPaintDrawSignature);
         // kill this so we don't double draw
         mPath.reset();
@@ -199,17 +200,17 @@ public class SignatureView extends View {
         mCanvas.drawColor(Color.WHITE);
         signatureDrawn = false;
         drawSignatureText = true;
-        mCanvas.drawRect(0, 0 , mCanvas.getWidth() , 1,mBitmapPaint);
-        mCanvas.drawRect(0, 0 , 1 , mCanvas.getHeight() ,mBitmapPaint);
-        mCanvas.drawRect(0,mCanvas.getHeight()-1, mCanvas.getWidth() , mCanvas.getHeight()  , mBitmapPaint);
-        mCanvas.drawRect(mCanvas.getWidth() -1, 0 , mCanvas.getWidth() ,mCanvas.getHeight() , mBitmapPaint);
+//        mCanvas.drawRect(0, 0 , mCanvas.getWidth() , 1,mBitmapPaint);
+//        mCanvas.drawRect(0, 0 , 1 , mCanvas.getHeight() ,mBitmapPaint);
+//        mCanvas.drawRect(0,mCanvas.getHeight()-1, mCanvas.getWidth() , mCanvas.getHeight()  , mBitmapPaint);
+//        mCanvas.drawRect(mCanvas.getWidth() -1, 0 , mCanvas.getWidth() ,mCanvas.getHeight() , mBitmapPaint);
 
         Rect bounds = new Rect();
         mBitmapPaint.getTextBounds("Signature", 0, 9, bounds);
 
         int y = mCanvas.getHeight() - (bounds.height() *2 );
         mBitmapPaint.setColor(Color.LTGRAY);
-        mCanvas.drawRect(15, mCanvas.getHeight() - (bounds.height() * 2), mCanvas.getWidth() -15, mCanvas.getHeight() - ((bounds.height() *2)+1), mBitmapPaint);
+        //mCanvas.drawRect(15, mCanvas.getHeight() - (bounds.height() * 2), mCanvas.getWidth() -15, mCanvas.getHeight() - ((bounds.height() *2)+1), mBitmapPaint);
         //mCanvas.drawText("Signature", mCanvas.getWidth()-(bounds.width()+20), mCanvas.getHeight() - (bounds.height()), mBitmapPaint);
         invalidate();
     }

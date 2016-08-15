@@ -31,6 +31,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -39,6 +40,7 @@ import java.util.Set;
 
 import visitor.app.com.visitormanagement.R;
 import visitor.app.com.visitormanagement.activities.BaseActivity;
+import visitor.app.com.visitormanagement.models.WorkBookModel;
 
 /**
  * Created by jugal on 16/7/16.
@@ -200,6 +202,15 @@ public class UIUtil {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(Constants.AUTH_TOKEN);
         editor.commit();
+    }
+
+    public static boolean isMandatoryParam(ArrayList<String> mandatoryParams, String fieldName){
+        for(String mandatoryParam : mandatoryParams){
+            if(mandatoryParam.trim().equals(fieldName)){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

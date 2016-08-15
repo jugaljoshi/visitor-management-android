@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 import visitor.app.com.visitormanagement.utils.Constants;
 
 /**
@@ -13,10 +15,13 @@ import visitor.app.com.visitormanagement.utils.Constants;
 public class WorkBookModel implements Parcelable{
 
     @SerializedName(Constants.WB_NAME)
-    String wbName;
+    private String wbName;
 
     @SerializedName(Constants.WB_ID)
-    String wbId;
+    private String wbId;
+
+    @SerializedName(Constants.VISITOR_MANDATORY_FIELDS)
+    private ArrayList<String> visitorMandatoryFields;
 
     @SerializedName(Constants.WB_IMG_URL)
     String wbImgUrl;
@@ -41,6 +46,12 @@ public class WorkBookModel implements Parcelable{
         this.wbName = source.readString();
         this.wbId = source.readString();
         this.wbImgUrl = source.readString();
+
+        boolean isMandatoryFieldsNull = source.readByte() == (byte) 0;
+        if(!isMandatoryFieldsNull) {
+            visitorMandatoryFields = new ArrayList<>();
+            source.readStringList(visitorMandatoryFields);
+        }
     }
 
     @Override
@@ -48,6 +59,12 @@ public class WorkBookModel implements Parcelable{
         dest.writeString(wbName);
         dest.writeString(wbId);
         dest.writeString(wbImgUrl);
+        boolean isMandatoryFieldsNull = visitorMandatoryFields == null;
+        dest.writeByte(isMandatoryFieldsNull ? (byte) 0 : (byte) 1);
+        if(!isMandatoryFieldsNull){
+            dest.writeStringList(visitorMandatoryFields);
+        }
+
     }
 
     public String getWbName() {
@@ -60,5 +77,9 @@ public class WorkBookModel implements Parcelable{
 
     public String getWbId() {
         return wbId;
+    }
+
+    public ArrayList<String> getVisitorMandatoryFields() {
+        return visitorMandatoryFields;
     }
 }

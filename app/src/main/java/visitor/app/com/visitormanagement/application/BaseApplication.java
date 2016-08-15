@@ -34,7 +34,7 @@ public class BaseApplication extends Application {
                     .build();
             Picasso.setSingletonInstance(p);
         } catch (Throwable ex) {
-            //Crashlytics.logException(ex);
+            ex.printStackTrace();
         }
     }
 

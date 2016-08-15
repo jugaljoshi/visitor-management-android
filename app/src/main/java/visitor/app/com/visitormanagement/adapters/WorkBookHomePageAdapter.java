@@ -46,7 +46,7 @@ public class WorkBookHomePageAdapter<T extends OnWorkBookClickAware> extends Rec
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        WorkBookModel workBookModel = workBookModelArrayList.get(0);
+        WorkBookModel workBookModel = workBookModelArrayList.get(position);
         HomePageWorkBookHolder homePageWorkBookHolder = (HomePageWorkBookHolder) holder;
 
         ImageView imgWorkBook = homePageWorkBookHolder.getImgWorkBook();
@@ -57,7 +57,7 @@ public class WorkBookHomePageAdapter<T extends OnWorkBookClickAware> extends Rec
         TextView txtWorkBookName = homePageWorkBookHolder.getWorkBookName();
         if (!UIUtil.isEmpty(workBookModel.getWbName())) {
             txtWorkBookName.setVisibility(View.VISIBLE);
-            txtWorkBookName.setText(workBookModel.getWbName());
+            txtWorkBookName.setText(workBookModel.getWbName().toUpperCase());
         } else {
             txtWorkBookName.setVisibility(View.GONE);
         }

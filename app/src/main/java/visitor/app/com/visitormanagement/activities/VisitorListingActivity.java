@@ -2,6 +2,7 @@ package visitor.app.com.visitormanagement.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -27,12 +28,18 @@ import visitor.app.com.visitormanagement.utils.UIUtil;
 public class VisitorListingActivity extends BaseActivity {
 
     private String wbId;
+    private ArrayList<String> visitorMandatoryFields;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visitor_listing_layout);
+        FloatingActionButton floatingActionBtn = (FloatingActionButton) findViewById(R.id.floatingActionBtn);
         wbId = getIntent().getStringExtra(Constants.WB_ID);
+        visitorMandatoryFields = getIntent().getStringArrayListExtra(Constants.VISITOR_MANDATORY_FIELDS);
         if(UIUtil.isEmpty(wbId)) return;
+        if(visitorMandatoryFields == null || visitorMandatoryFields.size() <= 0){
+            floatingActionBtn.setVisibility(View.GONE);
+        }
         getVisitorData(wbId);
     }
 
@@ -84,6 +91,7 @@ public class VisitorListingActivity extends BaseActivity {
         if (UIUtil.isEmpty(wbId)) return;
         Intent createWorkBookIntent = new Intent(this, CreateVisitorActivity.class);
         createWorkBookIntent.putExtra(Constants.WB_ID, wbId);
+        createWorkBookIntent.putStringArrayListExtra(Constants.VISITOR_MANDATORY_FIELDS, visitorMandatoryFields);
         startActivityForResult(createWorkBookIntent, NavigationCodes.RC_GOTO_HOME);
     }
 
