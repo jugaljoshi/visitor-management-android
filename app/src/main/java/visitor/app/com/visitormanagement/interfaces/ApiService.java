@@ -61,7 +61,7 @@ public interface ApiService {
     @POST("create-visitor/")
     Call<ApiResponse> postVisitor(@Part MultipartBody.Part visitorImageBody,
                                   @Part MultipartBody.Part visitorSignBody,
-                                  @Part("params") HashMap<String, String> params); //@FieldMap HashMap<String, String> params
+                                  @Part(Constants.PARAMS) HashMap<String, String> params); //@FieldMap HashMap<String, String> params
 
 
     @GET("search-tc/")

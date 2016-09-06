@@ -94,6 +94,16 @@
             android:exported="false"
             android:multiprocess="true" />
 
+        <provider
+            android:name="visitor.app.com.visitormanagement.database.DatabaseContentProvider"
+            android:authorities="${applicationId}.provider"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name="visitor.app.com.visitormanagement.service.UploadVisitorIntentService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

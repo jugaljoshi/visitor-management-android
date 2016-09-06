@@ -30,6 +30,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -46,6 +49,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 import visitor.app.com.visitormanagement.ImageUtil.ImageUtil;
 import visitor.app.com.visitormanagement.R;
+import visitor.app.com.visitormanagement.database.CreateVisitorHelper;
+import visitor.app.com.visitormanagement.database.CreateVisitorObjHelper;
 import visitor.app.com.visitormanagement.fragment.AbstractFragment;
 import visitor.app.com.visitormanagement.interfaces.ApiService;
 import visitor.app.com.visitormanagement.interfaces.ImageUtilAware;
@@ -69,6 +74,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int REQUEST_CAMERA_DIALOG = 101;
     private static final int REQUEST_CODE_ASK_PERMISSIONS = 102;
+    private static final int REQUEST_STORE__LOCAL_DB = 103;
 
 
     private static View timePicker;
@@ -91,6 +97,9 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         if(UIUtil.isEmpty(wbId) || visitorMandatoryFields == null || visitorMandatoryFields.size() <= 0) return;
         layoutVisitorForm = (LinearLayout) findViewById(R.id.layoutVisitorForm);
         layoutSign = (LinearLayout) findViewById(R.id.layoutSign);
+
+//        ArrayList<CreateVisitorObjHelper> vs = CreateVisitorHelper.getVisitorRecords(this, 10);
+//        String s = "asdfasdfasdfaf";
         showVisitorForm();
     }
 
@@ -249,7 +258,9 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         if (sourceName == REQUEST_CAMERA_DIALOG) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     REQUEST_CODE_ASK_PERMISSIONS);
-        } else {
+        } else if(sourceName == REQUEST_STORE__LOCAL_DB){
+            storeDataToLocalDB(valuePassed);
+        }else {
             super.onPositiveButtonClicked(sourceName, valuePassed);
         }
     }
@@ -364,7 +375,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
                 cancel = true;
             }else if (!UIUtil.isAlphaString(editTextName.getText().toString().trim())) {
                 cancel = true;
-                if (focusView == null) focusView = editTextName;
+                focusView = editTextName;
                 UIUtil.reportFormInputFieldError(textInputName, getString(R.string.error_field_name));
             }
         }
@@ -453,13 +464,38 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         createVisitor(new File(visitorImageFileName), new File(signImageFileName), payload);
     }
 
+    private void storeDataToLocalDB(Bundle data){
+        Gson gson = new GsonBuilder().create();
+        String imagePath = data.getString(Constants.VISITOR_IMAGE_FILE);
+        String signaturePath = data.getString(Constants.SIGN_IMAGE_FILE);
+        HashMap<String, String> payload = (HashMap<String, String>)data.getSerializable(Constants.PARAMS);
+        CreateVisitorHelper.update(this, imagePath, signaturePath, gson.toJson(payload));
+        showToast(getString(R.string.record_inserted));
+        /*
+        Gson gson = new Gson();
+        Type orderDataType = new TypeToken<ArrayList<CeeFeedbackOrderData>>() {
+        }.getType();
+        final ArrayList<CeeFeedbackOrderData> ceeFeedbackOrderDatas = gson.fromJson(orderDataString, orderDataType);
+        Type ceeReasonsType = new TypeToken<ArrayList<OrderCancelReason>>() {
+        }.getType();
+        ArrayList<OrderCancelReason> ceeFeedBackReasons = gson.fromJson(ceeFeedBackReasonsString, ceeReasonsType);
+         */
+    }
+
+
     public void createVisitor(File visitorImage, File visitorSign, HashMap<String, String> payload) {
+
         if (!checkInternetConnection()) {
-            getHandler().sendOfflineError(true);
+           Bundle bundle = new Bundle();
+            bundle.putString(Constants.VISITOR_IMAGE_FILE, visitorImage.toString());
+            bundle.putString(Constants.SIGN_IMAGE_FILE, visitorSign.toString());
+            bundle.putSerializable(Constants.PARAMS, payload);
+            showAlertDialog(getString(R.string.store_to_local_db_title), getString(R.string.store_to_local_db),
+                    DialogButton.YES, DialogButton.CANCEL, REQUEST_STORE__LOCAL_DB, bundle, getString(R.string.insert));
             return;
         }
-        showProgressDialog(getString(R.string.please_wait), true);
 
+        showProgressDialog(getString(R.string.please_wait), true);
         RequestBody visitorImageRequestFile = RequestBody.create(MediaType.parse(MIME_TYPE), visitorImage);
         MultipartBody.Part visitorImageBody = MultipartBody.Part.createFormData(Constants.VISITOR_IMAGE_FILE, visitorImage.getName(), visitorImageRequestFile);
 
@@ -493,34 +529,6 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
                 }
             }
         });
-
-        /*
-        //todo sample images
-        ApiService apiService = ApiAdapter.getApiService(this);
-        // finally, execute the request
-        Response response = null;
-        Call<ApiResponse> call = apiService.postVisitor(visitorImageBody, visitorSignBody, payload); //payload
-        try {
-            response = call.execute();
-        } catch (Throwable e) {
-        }
-        if (response == null || isSuspended()) return;
-
-        if (response.isSuccessful()) {
-            ApiResponse apiResponse = (ApiResponse) response.body();
-            switch (apiResponse.status) {
-                case 0:
-                    showToast("Visitor entry successfully created!");
-                    break;
-                default:
-                    handler.sendEmptyMessage(apiResponse.status,
-                            apiResponse.message, true);
-                    break;
-            }
-        } else {
-            handler.handleHttpError(response.code(), response.message(), false);
-        }
-        */
     }
 
     private void showTimePickerDialog(View view) {

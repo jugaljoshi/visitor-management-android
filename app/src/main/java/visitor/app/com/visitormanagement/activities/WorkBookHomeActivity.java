@@ -19,6 +19,7 @@ import visitor.app.com.visitormanagement.interfaces.NavigationCodes;
 import visitor.app.com.visitormanagement.interfaces.OnWorkBookClickAware;
 import visitor.app.com.visitormanagement.models.ApiResponse;
 import visitor.app.com.visitormanagement.models.WorkBookModel;
+import visitor.app.com.visitormanagement.service.UploadVisitorIntentService;
 import visitor.app.com.visitormanagement.utils.ApiAdapter;
 import visitor.app.com.visitormanagement.utils.Constants;
 import visitor.app.com.visitormanagement.utils.NetworkCallback;
@@ -33,6 +34,12 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page_layout);
         getHomePageData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(this, UploadVisitorIntentService.class));
     }
 
     @Override

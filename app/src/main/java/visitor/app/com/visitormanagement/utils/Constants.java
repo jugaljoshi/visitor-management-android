@@ -34,6 +34,7 @@ public class Constants {
     public static final String VISITOR_MANDATORY_FIELDS = "mandatory_fields";
     public static final String WB_TYPES = "wb_types";
     public static final String VISITOR_INTENT = "visitor_intent";
+    public static final String PARAMS = "params";
 
     /*
        @method_decorator(mapi_mandatory_parameters('name', 'mobile_no', 'from_place', 'destination_place',

@@ -26,6 +26,10 @@
     <string name="serviceUnavailable">Service is temporarily unavailable. Please come back after sometime!</string>
     <string name="headingConnectionOffline">Connection Offline</string>
     <string name="connectionOffline">Cannot proceed with the operation. No network connection!\nPlease check your Internet connection</string>
+    <string name="store_to_local_db_title">No network connection!</string>
+    <string name="insert">INSERT</string>
+    <string name="record_inserted">Record inserted successfully</string>
+    <string name="store_to_local_db">Please check your Internet connection,\n Press Insert to store data locally.</string>
     <string name="please_wait">Please wait...</string>
     <string name="ok">OK</string>
     <string name="yesTxt">Yes</string>

@@ -17,6 +17,7 @@ import visitor.app.com.visitormanagement.utils.Constants;
 public class CreateVisitorHelper {
 
     public static final String ID = "_id";
+    /*
     public static final String WB_ID = Constants.WB_ID;
     public static final String NAME = Constants.NAME;
     public static final String MOBILE_NO = Constants.MOBILE_NO;
@@ -26,10 +27,7 @@ public class CreateVisitorHelper {
     public static final String DESTINATION_PLACE = Constants.DESTINATION_PLACE;
     public static final String IN_TIME = Constants.IN_TIME;
     public static final String OUT_TIME = Constants.OUT_TIME;
-    public static final String V_PHOTO = Constants.V_PHOTO;
-    public static final String V_SIGNATURE_PHOTO = Constants.V_SIGNATURE_PHOTO;
 
-    public static final String TABLE_NAME = "visitor";
     public static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s (" +
                     "%2$s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "%3$s TEXT NOT NULL," +
@@ -53,6 +51,24 @@ public class CreateVisitorHelper {
             OUT_TIME,
             V_PHOTO,
             V_SIGNATURE_PHOTO);
+
+    */
+    public static final String V_PHOTO = Constants.V_PHOTO;
+    public static final String V_SIGNATURE_PHOTO = Constants.V_SIGNATURE_PHOTO;
+    public static final String PARAMS = Constants.PARAMS;
+
+    public static final String TABLE_NAME = "visitor";
+
+    public static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s (" +
+                    "%2$s INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "%3$s TEXT," +
+                    " %4$s TEXT," +
+                    " %5$s TEXT NOT NULL);",
+            TABLE_NAME,
+            ID,
+            V_PHOTO,
+            V_SIGNATURE_PHOTO,
+            PARAMS);
 
     public static final Uri CONTENT_URI = Uri.withAppendedPath(
             DatabaseContentProvider.CONTENT_URI_PREFIX, TABLE_NAME);
@@ -84,6 +100,22 @@ public class CreateVisitorHelper {
         return visitorRecords;
     }
 
+    public static void update(Context context, String vPhoto, String vSignPhoto,
+                              String payload) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(V_PHOTO, vPhoto);
+        contentValues.put(V_SIGNATURE_PHOTO, vSignPhoto);
+        contentValues.put(PARAMS, payload);
+
+        ContentResolver cr = context.getContentResolver();
+        int count = cr.update(CONTENT_URI, contentValues,
+                ID + " = ?", new String[]{ID});
+        if (count <= 0) {
+            cr.insert(CONTENT_URI, contentValues);
+        }
+    }
+
+    /*
     public static void update(Context context, String wbId, String name,
                               String mobileNumber,
                               String vehicleNumber,
@@ -112,6 +144,7 @@ public class CreateVisitorHelper {
             cr.insert(CONTENT_URI, contentValues);
         }
     }
+    */
 
     public static void deleteRecord(Context context, String id) {
         context.getContentResolver().delete(CONTENT_URI, ID + " = ?", new String[]{id});
