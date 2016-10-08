@@ -30,12 +30,6 @@ public class MessageHandler<T extends ApiErrorAware & AppOperationAware> {
             case ApiErrorCodes.GENERIC_ERROR:
                 ctx.showApiErrorDialog(null, !TextUtils.isEmpty(message) ? message : getString(R.string.server_error), finish);
                 break;
-
-
-
-
-
-
             case ApiErrorCodes.INTERNAL_SERVER_ERROR:
                 ctx.showApiErrorDialog(getString(R.string.headingServerError),
                         getString(R.string.server_error), finish);

@@ -29,6 +29,7 @@
     <color name="dark_black">#000000</color>
 
     <color name="primary_text_color">#5F5F5F</color>
+    <color name="uiv3_divider_color">#B6B6B6</color>
     <color name="secondary_text_color">#929292</color>
 
     <color name="primary">#9dc73d</color>

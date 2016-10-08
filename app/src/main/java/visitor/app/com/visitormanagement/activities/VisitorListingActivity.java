@@ -5,18 +5,23 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
+import okhttp3.internal.framed.ErrorCode;
 import retrofit2.Call;
 import visitor.app.com.visitormanagement.R;
 import visitor.app.com.visitormanagement.adapters.VisitorListingRecyclerAdapter;
+import visitor.app.com.visitormanagement.interfaces.ApiErrorCodes;
 import visitor.app.com.visitormanagement.interfaces.ApiService;
 import visitor.app.com.visitormanagement.interfaces.NavigationCodes;
 import visitor.app.com.visitormanagement.models.ApiResponse;
 import visitor.app.com.visitormanagement.models.VisitorModel;
-import visitor.app.com.visitormanagement.models.WorkBookModel;
 import visitor.app.com.visitormanagement.utils.ApiAdapter;
 import visitor.app.com.visitormanagement.utils.Constants;
 import visitor.app.com.visitormanagement.utils.NetworkCallback;
@@ -34,13 +39,37 @@ public class VisitorListingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visitor_listing_layout);
         FloatingActionButton floatingActionBtn = (FloatingActionButton) findViewById(R.id.floatingActionBtn);
-        wbId = getIntent().getStringExtra(Constants.WB_ID);
-        visitorMandatoryFields = getIntent().getStringArrayListExtra(Constants.VISITOR_MANDATORY_FIELDS);
-        if(UIUtil.isEmpty(wbId)) return;
-        if(visitorMandatoryFields == null || visitorMandatoryFields.size() <= 0){
+        ArrayList<VisitorModel> visitorModelArrayList = getIntent().getParcelableArrayListExtra(Constants.VISITORS);
+        if (visitorModelArrayList != null && visitorModelArrayList.size() > 0) { // via search
+            renderVisitorListingPage(visitorModelArrayList);
             floatingActionBtn.setVisibility(View.GONE);
+        } else { // via home page
+            wbId = getIntent().getStringExtra(Constants.WB_ID);
+            visitorMandatoryFields = getIntent().getStringArrayListExtra(Constants.VISITOR_MANDATORY_FIELDS);
+            if (UIUtil.isEmpty(wbId)) return;
+            if (visitorMandatoryFields == null || visitorMandatoryFields.size() <= 0) {
+                floatingActionBtn.setVisibility(View.GONE);
+            }
+            getVisitorData(wbId);
         }
-        getVisitorData(wbId);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Intent intent = new Intent(this, SearchByFieldActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void getVisitorData(String wbId){
@@ -60,7 +89,13 @@ public class VisitorListingActivity extends BaseActivity {
                 if (workbookResponse.status == 0) {
                     ArrayList<VisitorModel> visitorModelArrayList = workbookResponse.apiResponseContent;
                     renderVisitorListingPage(visitorModelArrayList);
-                } else {
+                } else if(workbookResponse.status == ApiErrorCodes.NO_VISITOR){
+                    RelativeLayout layoutVisitorListingPage = (RelativeLayout) findViewById(R.id.layoutVisitorListingPage);
+                    layoutVisitorListingPage.setVisibility(View.GONE);
+                    LinearLayout emptyLayoutView = (LinearLayout) findViewById(R.id.emptyLayoutView);
+                    emptyLayoutView.setVisibility(View.VISIBLE);
+                    UIUtil.getEmptyPageView(emptyLayoutView, VisitorListingActivity.this);
+                }else {
                     handler.sendEmptyMessage(workbookResponse.status, workbookResponse.message);
                 }
             }
@@ -87,7 +122,7 @@ public class VisitorListingActivity extends BaseActivity {
     }
 
 
-    public void onCreateVisitorBtnClicked(View view){
+    public void bottomBtmClicked(View view){
         if (UIUtil.isEmpty(wbId)) return;
         Intent createWorkBookIntent = new Intent(this, CreateVisitorActivity.class);
         createWorkBookIntent.putExtra(Constants.WB_ID, wbId);

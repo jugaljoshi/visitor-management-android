@@ -5,11 +5,13 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/layoutWorkbookType"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/margin_mini"
         android:layout_marginLeft="@dimen/margin_normal"
         android:layout_marginRight="@dimen/margin_normal"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <EditText
@@ -22,6 +24,9 @@
         <Spinner
             android:id="@+id/spinnerWorkBookType"
             android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:drawableRight="@drawable/ic_arrow_drop_down_grey600_24dp"
             android:layout_marginTop="@dimen/margin_normal"
             android:layout_height="wrap_content" />
 

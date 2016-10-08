@@ -4,6 +4,7 @@ public interface ApiErrorCodes {
 
     int LOGIN_REQUIRED = 100;
     int GENERIC_ERROR = 101;
+    int NO_VISITOR = 102;
 
 
     int CREATE_VISITOR = 101;

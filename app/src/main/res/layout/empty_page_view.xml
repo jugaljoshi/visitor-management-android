@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layoutEmptyPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgEmptyResponse"
+            android:src="@drawable/empty_response"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_normal"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_below="@id/imgEmptyResponse"
+            android:textStyle="bold"
+            android:textSize="@dimen/large_text_size"
+            android:text="@string/empty_response_msg"
+            />
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/margin_normal"
+        android:layout_above="@id/layoutEmptyPage"
+        android:layout_width="wrap_content"
+        android:src="@android:drawable/ic_input_add"
+        android:onClick="bottomBtmClicked"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>

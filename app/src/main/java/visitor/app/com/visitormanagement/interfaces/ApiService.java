@@ -66,4 +66,13 @@ public interface ApiService {
 
     @GET("search-tc/")
     Call<ApiResponse<ArrayList<AutoSearchResponse>>> getSearchTerms(@Query(Constants.NAME) String name);
+
+    @GET("search/")
+    Call<ApiResponse<ArrayList<VisitorModel>>> getSearchByField(@Query(Constants.NAME) String name,
+                                                                      @Query(Constants.MOBILE_NO) String mobileNumber,
+                                                                      @Query(Constants.FROM_PLACE) String fromPlace,
+                                                                      @Query(Constants.DESTINATION_PLACE) String destPlace,
+                                                                      @Query(Constants.IN_TIME) String inTime,
+                                                                      @Query(Constants.OUT_TIME) String outTime,
+                                                                      @Query(Constants.VEHICLE_NO) String vehicleNumber);
 }

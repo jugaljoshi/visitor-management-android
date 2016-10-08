@@ -2,12 +2,13 @@ package visitor.app.com.visitormanagement.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ import visitor.app.com.visitormanagement.service.UploadVisitorIntentService;
 import visitor.app.com.visitormanagement.utils.ApiAdapter;
 import visitor.app.com.visitormanagement.utils.Constants;
 import visitor.app.com.visitormanagement.utils.NetworkCallback;
+import visitor.app.com.visitormanagement.utils.UIUtil;
 
 /**
  * Created by jugal on 16/7/16.
@@ -52,7 +54,7 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                Intent intent = new Intent(this, SearchActivity.class);
+                Intent intent = new Intent(this, SearchByFieldActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -95,7 +97,18 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
 
     private void renderHomePageData(ArrayList<WorkBookModel> workBookModelArrayList) {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        if (recyclerView == null ||  workBookModelArrayList == null) return;
+        LinearLayout emptyLayoutView = (LinearLayout) findViewById(R.id.emptyLayoutView);
+        RelativeLayout layoutHomePage = (RelativeLayout) findViewById(R.id.layoutHomePage);
+        if (recyclerView == null || emptyLayoutView == null || layoutHomePage == null) return;
+
+        if (workBookModelArrayList == null || workBookModelArrayList.isEmpty()) {
+            UIUtil.getEmptyPageView(emptyLayoutView, this);
+            layoutHomePage.setVisibility(View.GONE);
+            emptyLayoutView.setVisibility(View.VISIBLE);
+        } else {
+            layoutHomePage.setVisibility(View.VISIBLE);
+            emptyLayoutView.setVisibility(View.GONE);
+        }
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         WorkBookHomePageAdapter homePageAdapter = new WorkBookHomePageAdapter<>(this, workBookModelArrayList);
@@ -111,7 +124,7 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
         startActivity(visitorListingIntent);
     }
 
-    public void createWorkBook(View view) {
+    public void bottomBtmClicked(View view) {
         Intent createWorkBookIntent = new Intent(this, CreateWorkBookActivity.class);
         startActivityForResult(createWorkBookIntent, NavigationCodes.RC_GOTO_HOME);
     }

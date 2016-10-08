@@ -3,22 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+    <RelativeLayout
+        android:id="@+id/layoutVisitorListingPage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionBtn"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_above="@id/recyclerView"
+            android:layout_width="wrap_content"
+            android:src="@android:drawable/ic_input_add"
+            android:onClick="onCreateVisitorBtnClicked"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/emptyLayoutView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
         android:layout_marginBottom="@dimen/margin_normal"
-        android:layout_above="@id/recyclerView"
-        android:layout_width="wrap_content"
-        android:src="@android:drawable/ic_input_add"
-        android:onClick="onCreateVisitorBtnClicked"
-        android:layout_height="wrap_content" />
+        android:orientation="vertical" />
+
 
 </RelativeLayout>

@@ -46,6 +46,7 @@
     <string name="dest_place">Destination Place</string>
     <string name="in_time">In Time</string>
     <string name="out_time">Out Time</string>
+    <string name="date">Date</string>
     <string name="save">Save</string>
     <string name="clear">Clear</string>
     <string name="contactNoMin10">Enter a valid 10 digit mobile number.</string>
@@ -65,7 +66,8 @@
     <string name="client_error">Something went wrong on client side, Please try again later!</string>
     <string name="hint_search">Search by name</string>
     <string name="search">Search</string>
-
+    <string name="fill_at_least_one_field">Enter at-least one field</string>
+    <string name="empty_response_msg">No data available to retrieve!</string>
 
 
 </resources>

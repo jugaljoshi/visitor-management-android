@@ -2,25 +2,19 @@ package visitor.app.com.visitormanagement.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -35,12 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 import visitor.app.com.visitormanagement.R;
-import visitor.app.com.visitormanagement.activities.BaseActivity;
-import visitor.app.com.visitormanagement.models.WorkBookModel;
 
 /**
  * Created by jugal on 16/7/16.
@@ -211,6 +201,11 @@ public class UIUtil {
             }
         }
         return false;
+    }
+
+    public static void getEmptyPageView(LinearLayout emptyLayoutView, Context context) {
+        View view = LayoutInflater.from(context).inflate(R.layout.empty_page_view, null, false);
+        emptyLayoutView.addView(view);
     }
 
 }

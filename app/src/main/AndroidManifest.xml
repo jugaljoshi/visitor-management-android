@@ -49,6 +49,13 @@
         </activity>
 
         <activity
+            android:name=".activities.SearchByFieldActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:label="@string/search">
+        </activity>
+
+        <activity
             android:name=".activities.CreateWorkBookActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -67,10 +74,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:label="@string/create_visitor">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
         </activity>
 
         <activity

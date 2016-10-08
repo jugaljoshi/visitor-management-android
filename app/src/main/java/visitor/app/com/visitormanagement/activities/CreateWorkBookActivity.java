@@ -1,11 +1,9 @@
 package visitor.app.com.visitormanagement.activities;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -82,16 +80,20 @@ public class CreateWorkBookActivity extends BaseActivity {
         final ArrayList<WorkBookTypeModel> workBookTypeModelArrayList = workBookResponse.getWorkBookTypeModelArrayList();
         ArrayList<String> visitorMandatoryFields =  workBookResponse.getVisitorMandatoryFields();
 
-        if(workBookTypeModelArrayList == null || workBookTypeModelArrayList.size() == 0 ||
-                visitorMandatoryFields == null || visitorMandatoryFields.size() == 0){
+        if (workBookTypeModelArrayList == null || workBookTypeModelArrayList.size() == 0 ||
+                visitorMandatoryFields == null || visitorMandatoryFields.size() == 0) {
             handler.sendEmptyMessage(ApiErrorCodes.GENERIC_ERROR, getString(R.string.error_while_getting_data), true);
             return;
         }
+
+        LinearLayout layoutWorkbookType = (LinearLayout) findViewById(R.id.layoutWorkbookType);
+        layoutWorkbookType.setVisibility(View.VISIBLE);
 
         editTxtWorkBookName = (EditText) findViewById(R.id.editTxtWorkBookName);
 
         // set spinner data
         ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add(0, "--- Select Type ---");
         for (WorkBookTypeModel workBookTypeModel : workBookTypeModelArrayList) {
             stringArrayList.add(workBookTypeModel.getWbType());
         }
@@ -105,7 +107,11 @@ public class CreateWorkBookActivity extends BaseActivity {
         spinnerWorkBookType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                WorkBookTypeModel workBookTypeModel = workBookTypeModelArrayList.get(position);
+                if (position <= 0) {
+                    return;
+                }
+
+                WorkBookTypeModel workBookTypeModel = workBookTypeModelArrayList.get(position - 1);
                 workBookTypeId = workBookTypeModel.getWbTypeId();
             }
 
@@ -126,7 +132,6 @@ public class CreateWorkBookActivity extends BaseActivity {
         final int black = ContextCompat.getColor(this, R.color.dark_black);
         int margin = getResources().getDimensionPixelSize(R.dimen.margin_small);
         int padding = getResources().getDimensionPixelSize(R.dimen.padding_small);
-        int txtSize = getResources().getDimensionPixelSize(R.dimen.margin_small);
 
         MandatoryButtonOnClickListener reasonsButtonOnClickListener = new MandatoryButtonOnClickListener(this);
         int mandatoryFieldsSize = visitorMandatoryFields.size();
@@ -139,12 +144,12 @@ public class CreateWorkBookActivity extends BaseActivity {
 
             // Adding button 1
             final Button button = createButton(visitorMandatoryFields.get(i), margin, padding,
-                    txtSize, black, reasonsButtonOnClickListener);
+                    black, reasonsButtonOnClickListener);
             i++;
 
             // Adding button 2
             Button buttonSecond = createButton(visitorMandatoryFields.get(i), margin, padding,
-                    txtSize, black, reasonsButtonOnClickListener);
+                    black, reasonsButtonOnClickListener);
 
             layoutHorizontal.addView(button);
             layoutHorizontal.addView(buttonSecond);
@@ -158,7 +163,7 @@ public class CreateWorkBookActivity extends BaseActivity {
 
             // Add Button 3
             Button buttonThird = createButton(visitorMandatoryFields.get(val), margin, padding,
-                    txtSize, black, reasonsButtonOnClickListener);
+                    black, reasonsButtonOnClickListener);
 
             // Add Dumm View
             View dummyView = new View(this);
@@ -182,7 +187,7 @@ public class CreateWorkBookActivity extends BaseActivity {
         return layoutHorizontal;
     }
 
-    private Button createButton(String mandatoryField, int margin, int padding, int size, int colorBlack,
+    private Button createButton(String mandatoryField, int margin, int padding, int colorBlack,
                                 View.OnClickListener buttonOnClickListener) {
         Button button = new Button(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams
@@ -191,7 +196,7 @@ public class CreateWorkBookActivity extends BaseActivity {
         layoutParams.gravity = Gravity.CENTER_VERTICAL;
         button.setLayoutParams(layoutParams);
         button.setGravity(Gravity.CENTER);
-        button.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        //button.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         button.setPadding(padding, padding, padding, padding);
         button.setTextColor(colorBlack);
         button.setAllCaps(true);

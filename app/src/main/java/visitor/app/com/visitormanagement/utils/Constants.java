@@ -54,4 +54,6 @@ public class Constants {
     public static final String VISITOR_IMAGE_FILE = "photo";
     public static final String SIGN_IMAGE_FILE = "signature";
     public static final String SIGN_IMAGE_BYTE_DATA = "visitorSignByteData";
+
+    public static final String VISITORS = "visitors";
 }

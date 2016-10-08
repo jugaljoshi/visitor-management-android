@@ -1,6 +1,7 @@
 package visitor.app.com.visitormanagement.activities;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -15,18 +16,18 @@ import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -35,6 +36,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,17 +48,13 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import visitor.app.com.visitormanagement.ImageUtil.ImageUtil;
 import visitor.app.com.visitormanagement.R;
 import visitor.app.com.visitormanagement.database.CreateVisitorHelper;
-import visitor.app.com.visitormanagement.database.CreateVisitorObjHelper;
-import visitor.app.com.visitormanagement.fragment.AbstractFragment;
 import visitor.app.com.visitormanagement.interfaces.ApiService;
 import visitor.app.com.visitormanagement.interfaces.ImageUtilAware;
 import visitor.app.com.visitormanagement.interfaces.NavigationCodes;
 import visitor.app.com.visitormanagement.models.ApiResponse;
-import visitor.app.com.visitormanagement.models.VisitorModel;
 import visitor.app.com.visitormanagement.utils.ApiAdapter;
 import visitor.app.com.visitormanagement.utils.Constants;
 import visitor.app.com.visitormanagement.utils.DialogButton;
@@ -87,6 +85,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
     private String visitorImageFileName, signImageFileName;
     private String wbId;
     private ArrayList<String> visitorMandatoryFields;
+    private static String dateString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +100,24 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
 //        ArrayList<CreateVisitorObjHelper> vs = CreateVisitorHelper.getVisitorRecords(this, 10);
 //        String s = "asdfasdfasdfaf";
         showVisitorForm();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_date, menu);
+        menu.findItem(R.menu.menu_date).setVisible(false);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_date:
+                showDatePickerDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /*
@@ -278,7 +295,18 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         setSuspended(false);
         if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                Bitmap bitmap;
+                if (data.getData() == null) {
+                    bitmap = (Bitmap) data.getExtras().get("data");
+                } else {
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                    } catch (IOException e) {
+                        showToast("Sorry! Failed to capture image");
+                        return;
+                    }
+                }
+
                 String filePath = ImageUtil.storeBitMapToFile(bitmap, "visitor");
                 if (!UIUtil.isEmpty(filePath)) {
                     SampleImageTask sampleImageTask = new SampleImageTask(filePath, txtViewVisitorPhoto, false);
@@ -343,6 +371,11 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
     public void onOutTimeClick(View view) {
         this.timePicker = view;
         showTimePickerDialog(view);
+    }
+
+    private void showDatePickerDialog() {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
     private boolean isEditTextEmpty(EditText editText) {
@@ -455,8 +488,14 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         payload.put(Constants.FROM_PLACE, editTextFromPlace.getText().toString());
         payload.put(Constants.DESTINATION_PLACE, editTextDestinationPlace.getText().toString());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd ", Locale.getDefault());
-        String date = dateFormat.format(new Date());
+        String date;
+        if (UIUtil.isEmpty(dateString)) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd ", Locale.getDefault());
+            date = dateFormat.format(new Date());
+        } else {
+            date = dateString;
+        }
+
         payload.put(Constants.IN_TIME, date+editTextInTime.getText().toString()+":00");
         payload.put(Constants.OUT_TIME, date+editTextOutTime.getText().toString()+":00");
         payload.put(Constants.VEHICLE_NO, editTextVehicleNumber.getText().toString());
@@ -600,6 +639,26 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         }
     }
 
+
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            dateString = year + "" + (month + 1) + "" + day;
+        }
+    }
+
     public class SampleImageTask extends AsyncTask<String, Void, Void> {
 
         private String path;
@@ -615,21 +674,21 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (isSuspended()) {
-                cancel(true);
-            } else {
-                showProgressDialog(getString(R.string.please_wait), false);
-            }
+//            if (isSuspended()) {
+//                cancel(true);
+//            } else {
+//                showProgressDialog(getString(R.string.please_wait), true);
+//            }
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (!isSuspended()) {
-                hideProgressDialog();
-            } else {
-                return;
-            }
+//            if (!isSuspended()) {
+//                hideProgressDialog();
+//            } else {
+//                return;
+//            }
             layoutVisitorForm.setVisibility(View.VISIBLE);
             layoutSign.setVisibility(View.GONE);
             layoutPic.setVisibility(View.VISIBLE);
@@ -637,9 +696,9 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
 
         @Override
         protected Void doInBackground(String... params) {
-            if (isCancelled()) {
-                return null;
-            }
+//            if (isCancelled()) {
+//                return null;
+//            }
             sampleImage(path, textView, isSignatureImage);
 
             return null;
