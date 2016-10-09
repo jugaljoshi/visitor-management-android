@@ -14,9 +14,3 @@ public final class MobileApiUrl {
         return DOMAIN_NAME + API_PATH;
     }
 }
-
-/*
-Once you eliminate the impossible, whatever remains, no matter how improbable, must be the truth.
-Start by doing what's necessary, then do what's possible, and suddenly you are doing the impossible.
-
- */
