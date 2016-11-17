@@ -11,12 +11,23 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import okhttp3.internal.framed.ErrorCode;
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+
 import retrofit2.Call;
 import visitor.app.com.visitormanagement.R;
 import visitor.app.com.visitormanagement.adapters.VisitorListingRecyclerAdapter;
+import visitor.app.com.visitormanagement.database.CreateVisitorHelper;
+import visitor.app.com.visitormanagement.database.CreateVisitorObjHelper;
 import visitor.app.com.visitormanagement.interfaces.ApiErrorCodes;
 import visitor.app.com.visitormanagement.interfaces.ApiService;
 import visitor.app.com.visitormanagement.interfaces.NavigationCodes;
@@ -34,10 +45,14 @@ public class VisitorListingActivity extends BaseActivity {
 
     private String wbId;
     private ArrayList<String> visitorMandatoryFields;
+    private RelativeLayout layoutVisitorListingPage;
+    private LinearLayout emptyLayoutView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visitor_listing_layout);
+        layoutVisitorListingPage = (RelativeLayout) findViewById(R.id.layoutVisitorListingPage);
+        emptyLayoutView = (LinearLayout) findViewById(R.id.emptyLayoutView);
         FloatingActionButton floatingActionBtn = (FloatingActionButton) findViewById(R.id.floatingActionBtn);
         ArrayList<VisitorModel> visitorModelArrayList = getIntent().getParcelableArrayListExtra(Constants.VISITORS);
         if (visitorModelArrayList != null && visitorModelArrayList.size() > 0) { // via search
@@ -72,9 +87,88 @@ public class VisitorListingActivity extends BaseActivity {
         }
     }
 
+    private void showEmptyVisitorPage(){
+        layoutVisitorListingPage.setVisibility(View.GONE);
+        emptyLayoutView.setVisibility(View.VISIBLE);
+        UIUtil.getEmptyPageView(emptyLayoutView, VisitorListingActivity.this, true);
+    }
+
+    private ArrayList<VisitorModel> getStoredVisitorsFromDB(){
+        ArrayList<VisitorModel> visitorModelArrayList = new ArrayList<>();
+
+        ArrayList<CreateVisitorObjHelper> visitorObjHelpers = CreateVisitorHelper.getVisitorRecords(this, -1);
+        if(visitorObjHelpers == null || visitorObjHelpers.isEmpty()) return null;
+        Gson gson = new GsonBuilder().create();
+        Type hashMapType = new TypeToken<HashMap<String, String>>() {}.getType();
+        for (CreateVisitorObjHelper visitorObjHelper : visitorObjHelpers) {
+            HashMap<String, String> payload = gson.fromJson(visitorObjHelper.getParams(), hashMapType);
+            VisitorModel visitorModel = new VisitorModel();
+            if (payload.containsKey(Constants.WB_ID)) {
+                if (!payload.get(Constants.WB_ID).equalsIgnoreCase(wbId)) {
+                    continue;
+                }
+                visitorModel.setWbId(payload.get(Constants.WB_ID));
+            } else {
+                continue;
+            }
+
+            String visitorImg = visitorObjHelper.getvPhotoUrl();
+            if (!UIUtil.isEmpty(visitorImg)) visitorModel.setVisitorImg(visitorImg);
+            String signatureUrl = visitorObjHelper.getvSignatureUrl();
+            if (!UIUtil.isEmpty(signatureUrl)) visitorModel.setVisitorSignUrl(signatureUrl);
+
+
+            if (payload.containsKey(Constants.NAME))
+                visitorModel.setName(payload.get(Constants.NAME));
+            if (payload.containsKey(Constants.MOBILE_NO))
+                visitorModel.setMobileNumber(payload.get(Constants.MOBILE_NO));
+            if (payload.containsKey(Constants.VEHICLE_NO))
+                visitorModel.setVehicleNo(payload.get(Constants.VEHICLE_NO));
+            if (payload.containsKey(Constants.FROM_PLACE))
+                visitorModel.setFromPlace(payload.get(Constants.FROM_PLACE));
+            if (payload.containsKey(Constants.DESTINATION_PLACE))
+                visitorModel.setDestinationPlace(payload.get(Constants.DESTINATION_PLACE));
+            if (payload.containsKey(Constants.IN_TIME)) {
+                String dateTime = payload.get(Constants.IN_TIME); //06122016 12:34:00
+                String displayTime = "";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy HH:mm:ss", Locale.getDefault());
+                try {
+                    Date date = simpleDateFormat.parse(dateTime);
+                    displayTime = date.getHours() + ":" + date.getMinutes();
+                } catch (ParseException ex) {
+                    System.out.println("Exception " + ex);
+                    displayTime = dateTime.split(" ")[1];
+                }
+                visitorModel.setInTime(displayTime);
+            }
+            if (payload.containsKey(Constants.OUT_TIME)) {
+                String dateTime = payload.get(Constants.OUT_TIME);
+                String displayTime = "";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy HH:mm:ss", Locale.getDefault());
+                try {
+                    Date date = simpleDateFormat.parse(dateTime);
+                    displayTime = date.getHours() + ":" + date.getMinutes();
+                } catch (ParseException ex) {
+                    System.out.println("Exception " + ex);
+                    displayTime = dateTime.split(" ")[1];
+                }
+                visitorModel.setOutTime(displayTime);
+            }
+
+            visitorModelArrayList.add(visitorModel);
+        }
+        return visitorModelArrayList;
+    }
+
     private void getVisitorData(String wbId){
         if (!checkInternetConnection()) {
-            getHandler().sendOfflineError(true);
+            showToast(getString(R.string.no_network_label));
+            ArrayList<VisitorModel> visitorStoredModelArrayList = getStoredVisitorsFromDB();
+            if (visitorStoredModelArrayList == null || visitorStoredModelArrayList.isEmpty()) {
+                showEmptyVisitorPage();
+            } else {
+                renderVisitorListingPage(visitorStoredModelArrayList);
+            }
             return;
         }
 
@@ -90,11 +184,7 @@ public class VisitorListingActivity extends BaseActivity {
                     ArrayList<VisitorModel> visitorModelArrayList = workbookResponse.apiResponseContent;
                     renderVisitorListingPage(visitorModelArrayList);
                 } else if(workbookResponse.status == ApiErrorCodes.NO_VISITOR){
-                    RelativeLayout layoutVisitorListingPage = (RelativeLayout) findViewById(R.id.layoutVisitorListingPage);
-                    layoutVisitorListingPage.setVisibility(View.GONE);
-                    LinearLayout emptyLayoutView = (LinearLayout) findViewById(R.id.emptyLayoutView);
-                    emptyLayoutView.setVisibility(View.VISIBLE);
-                    UIUtil.getEmptyPageView(emptyLayoutView, VisitorListingActivity.this);
+                    showEmptyVisitorPage();
                 }else {
                     handler.sendEmptyMessage(workbookResponse.status, workbookResponse.message);
                 }
@@ -113,11 +203,13 @@ public class VisitorListingActivity extends BaseActivity {
     }
 
     private void renderVisitorListingPage(ArrayList<VisitorModel> visitorModelArrayList){
+        layoutVisitorListingPage.setVisibility(View.VISIBLE);
+        emptyLayoutView.setVisibility(View.GONE);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         if(recyclerView == null) return;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        VisitorListingRecyclerAdapter visitorListingRecyclerAdapter = new VisitorListingRecyclerAdapter(visitorModelArrayList);
+        VisitorListingRecyclerAdapter visitorListingRecyclerAdapter = new VisitorListingRecyclerAdapter(visitorModelArrayList, this);
         recyclerView.setAdapter(visitorListingRecyclerAdapter);
     }
 

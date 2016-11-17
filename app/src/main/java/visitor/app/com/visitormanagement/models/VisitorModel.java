@@ -55,6 +55,9 @@ public class VisitorModel implements Parcelable {
         this.visitorSignUrl = source.readString();
     }
 
+    private String wbId;
+    public VisitorModel() {
+    }
 
     @Override
     public int describeContents() {
@@ -108,5 +111,49 @@ public class VisitorModel implements Parcelable {
 
     public String getVisitorSignUrl() {
         return visitorSignUrl;
+    }
+
+    public void setVisitorImg(String visitorImg) {
+        this.visitorImg = visitorImg;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public void setFromPlace(String fromPlace) {
+        this.fromPlace = fromPlace;
+    }
+
+    public void setDestinationPlace(String destinationPlace) {
+        this.destinationPlace = destinationPlace;
+    }
+
+    public void setInTime(String inTime) {
+        this.inTime = inTime;
+    }
+
+    public void setOutTime(String outTime) {
+        this.outTime = outTime;
+    }
+
+    public void setVehicleNo(String vehicleNo) {
+        this.vehicleNo = vehicleNo;
+    }
+
+    public void setVisitorSignUrl(String visitorSignUrl) {
+        this.visitorSignUrl = visitorSignUrl;
+    }
+
+    public String getWbId() {
+        return wbId;
+    }
+
+    public void setWbId(String wbId) {
+        this.wbId = wbId;
     }
 }

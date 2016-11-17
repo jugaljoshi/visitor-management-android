@@ -116,9 +116,9 @@ public class UIUtil {
             picasso.cancelRequest(imageView);
         }
 
-        if (placeHolderDrawableId > 0) {
-            requestCreator.placeholder(placeHolderDrawableId);
-        }
+//        if (placeHolderDrawableId > 0) {
+//            requestCreator.placeholder(placeHolderDrawableId);
+//        }
         if (skipMemoryCache) {
             requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE);
         }
@@ -203,8 +203,14 @@ public class UIUtil {
         return false;
     }
 
-    public static void getEmptyPageView(LinearLayout emptyLayoutView, Context context) {
+    public static void getEmptyPageView(LinearLayout emptyLayoutView, Context context, boolean isFloatingActionButtonVisible) {
         View view = LayoutInflater.from(context).inflate(R.layout.empty_page_view, null, false);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.floatingActionBtn);
+        if(isFloatingActionButtonVisible){
+            floatingActionButton.setVisibility(View.VISIBLE);
+        }else {
+            floatingActionButton.setVisibility(View.GONE);
+        }
         emptyLayoutView.addView(view);
     }
 

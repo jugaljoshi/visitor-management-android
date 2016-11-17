@@ -27,6 +27,8 @@
     <string name="headingConnectionOffline">Connection Offline</string>
     <string name="connectionOffline">Cannot proceed with the operation. No network connection!\nPlease check your Internet connection</string>
     <string name="store_to_local_db_title">No network connection!</string>
+    <string name="no_network_label">No network connection!</string>
+    <string name="no_network_label_for_workbook_type">Inter connection is must for creating Workbook type!</string>
     <string name="insert">INSERT</string>
     <string name="record_inserted">Record inserted successfully</string>
     <string name="store_to_local_db">Please check your Internet connection,\n Press Insert to store data locally.</string>
@@ -44,6 +46,10 @@
     <string name="vehicle_no">Vehicle Number</string>
     <string name="from_place">From Place</string>
     <string name="dest_place">Destination Place</string>
+    <string name="workbook_type">WorkBook Type</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+
     <string name="in_time">In Time</string>
     <string name="out_time">Out Time</string>
     <string name="date">Date</string>
@@ -68,6 +74,27 @@
     <string name="search">Search</string>
     <string name="fill_at_least_one_field">Enter at-least one field</string>
     <string name="empty_response_msg">No data available to retrieve!</string>
+    <string name="enter_wor_book_type">Please Enter Workbook type:</string>
+    <string name="submit">Submit</string>
+
+    <string-array name="randomColors" translatable="false">
+        <item>#99cc00</item>
+        <item>#33b5e5</item>
+        <item>#0099cc</item>
+        <item>#547bca</item>
+        <item>#aa66cc</item>
+        <item>#9933cc</item>
+        <item>#E79F30</item>
+        <item>#aeb857</item>
+        <item>#cc0000</item>
+        <item>#df5948</item>
+        <item>#ff4444</item>
+        <item>#ae6b23</item>
+        <item>#ff8800</item>
+        <item>#e5ae4f</item>
+        <item>#ffbb33</item>
+    </string-array>
+
 
 
 </resources>

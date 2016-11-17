@@ -1,5 +1,7 @@
 package visitor.app.com.visitormanagement.adapters;
 
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +11,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import visitor.app.com.visitormanagement.ImageUtil.ImageClickListener;
+import visitor.app.com.visitormanagement.ImageUtil.ShowImageDialog;
 import visitor.app.com.visitormanagement.R;
+import visitor.app.com.visitormanagement.interfaces.AppOperationAware;
 import visitor.app.com.visitormanagement.models.VisitorModel;
 import visitor.app.com.visitormanagement.utils.UIUtil;
 
@@ -19,9 +24,11 @@ import visitor.app.com.visitormanagement.utils.UIUtil;
 public class VisitorListingRecyclerAdapter extends RecyclerView.Adapter<VisitorListingRecyclerAdapter.VisitorHolder> {
 
     private ArrayList<VisitorModel> visitorModelArrayList;
+    private View.OnClickListener imageClickListener;
 
-    public VisitorListingRecyclerAdapter(ArrayList<VisitorModel> visitorModelArrayList){
+    public VisitorListingRecyclerAdapter(ArrayList<VisitorModel> visitorModelArrayList, AppCompatActivity appCompatActivity){
         this.visitorModelArrayList = visitorModelArrayList;
+        this.imageClickListener = new ImageClickListener(appCompatActivity);
     }
 
     @Override
@@ -31,7 +38,7 @@ public class VisitorListingRecyclerAdapter extends RecyclerView.Adapter<VisitorL
         return new VisitorHolder(itemView);
     }
 
-    @Override
+        @Override
     public void onBindViewHolder(VisitorHolder visitorHolder, int position) {
         VisitorModel visitorModel = visitorModelArrayList.get(position);
 
@@ -39,6 +46,7 @@ public class VisitorListingRecyclerAdapter extends RecyclerView.Adapter<VisitorL
         if(!UIUtil.isEmpty(visitorModel.getVisitorImg())){
             UIUtil.displayAsyncImage(imgVisitor, visitorModel.getVisitorImg());
             imgVisitor.setVisibility(View.VISIBLE);
+            imgVisitor.setTag(visitorModel.getVisitorImg());
         }else {
             imgVisitor.setVisibility(View.GONE);
         }
@@ -47,6 +55,7 @@ public class VisitorListingRecyclerAdapter extends RecyclerView.Adapter<VisitorL
         if(!UIUtil.isEmpty(visitorModel.getVisitorSignUrl())){
             UIUtil.displayAsyncImage(imgSignature, visitorModel.getVisitorSignUrl());
             imgSignature.setVisibility(View.VISIBLE);
+            imgSignature.setTag(visitorModel.getVisitorSignUrl());
         }else {
             imgSignature.setVisibility(View.GONE);
         }
@@ -135,6 +144,8 @@ public class VisitorListingRecyclerAdapter extends RecyclerView.Adapter<VisitorL
         public ImageView getImgVisitor() {
             if(imgVisitor == null){
                 imgVisitor = (ImageView) itemView.findViewById(R.id.imgVisitor);
+                imgVisitor.setOnClickListener(imageClickListener);
+
             }
             return imgVisitor;
         }
@@ -142,6 +153,7 @@ public class VisitorListingRecyclerAdapter extends RecyclerView.Adapter<VisitorL
         public ImageView getImgSignature() {
             if(imgSignature == null){
                 imgSignature = (ImageView) itemView.findViewById(R.id.imgSignature);
+                imgSignature.setOnClickListener(imageClickListener);
             }
             return imgSignature;
         }

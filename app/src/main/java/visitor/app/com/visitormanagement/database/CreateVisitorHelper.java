@@ -56,6 +56,7 @@ public class CreateVisitorHelper {
     public static final String V_PHOTO = Constants.V_PHOTO;
     public static final String V_SIGNATURE_PHOTO = Constants.V_SIGNATURE_PHOTO;
     public static final String PARAMS = Constants.PARAMS;
+    public static final String NEED_UPLOAD = "need_upload";
 
     public static final String TABLE_NAME = "visitor";
 
@@ -81,9 +82,44 @@ public class CreateVisitorHelper {
         Cursor cursor = null;
         ArrayList<CreateVisitorObjHelper> visitorRecords = null;
         try {
+            String sortOrder;
+            if (limit <= 0) {
+                sortOrder = ID;
+            } else {
+                sortOrder = ID + " DESC LIMIT " + String.valueOf(limit);
+            }
             cursor = context.getContentResolver().query(CONTENT_URI,
                     CreateVisitorObjHelper.PROJECTION,
-                    null, null, ID + " DESC LIMIT " + String.valueOf(limit));
+                    null, null, sortOrder);
+            if (cursor != null && cursor.moveToFirst()) {
+                visitorRecords = new ArrayList<>(cursor.getCount());
+                do {
+                    visitorRecords.add(new CreateVisitorObjHelper(cursor));
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return visitorRecords;
+    }
+
+    public static ArrayList<CreateVisitorObjHelper> getVisitorRecordsNeedToUpload(Context context, int limit) {
+        Cursor cursor = null;
+        ArrayList<CreateVisitorObjHelper> visitorRecords = null;
+        try {
+            String sortOrder;
+            if (limit <= 0) {
+                sortOrder = ID;
+            } else {
+                sortOrder = ID + " DESC LIMIT " + String.valueOf(limit);
+            }
+            cursor = context.getContentResolver().query(CONTENT_URI,
+                    CreateVisitorObjHelper.PROJECTION,
+                    NEED_UPLOAD+"=?", new String[] {"1"}, sortOrder);
             if (cursor != null && cursor.moveToFirst()) {
                 visitorRecords = new ArrayList<>(cursor.getCount());
                 do {
@@ -101,11 +137,12 @@ public class CreateVisitorHelper {
     }
 
     public static void update(Context context, String vPhoto, String vSignPhoto,
-                              String payload) {
+                              String payload, int needUpload) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(V_PHOTO, vPhoto);
         contentValues.put(V_SIGNATURE_PHOTO, vSignPhoto);
         contentValues.put(PARAMS, payload);
+        contentValues.put(NEED_UPLOAD, needUpload);
 
         ContentResolver cr = context.getContentResolver();
         int count = cr.update(CONTENT_URI, contentValues,

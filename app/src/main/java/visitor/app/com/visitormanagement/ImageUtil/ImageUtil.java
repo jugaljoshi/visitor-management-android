@@ -76,8 +76,8 @@ public class ImageUtil {
                 imageSizeInMB = (dstHeight * dstWidth) / (1024 * 1024);
             }
             */
-            int dstHeight = 150;
-            int dstWidth = 150;
+            int dstHeight = 200;
+            int dstWidth = 200;
 
             // decode full image pre-resized
             in = new FileInputStream(pathOfInputImage);

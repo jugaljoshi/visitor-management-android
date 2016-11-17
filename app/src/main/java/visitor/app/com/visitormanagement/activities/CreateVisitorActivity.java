@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,8 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -48,6 +45,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import visitor.app.com.visitormanagement.ImageUtil.ImageDataReturnModel;
 import visitor.app.com.visitormanagement.ImageUtil.ImageUtil;
 import visitor.app.com.visitormanagement.R;
 import visitor.app.com.visitormanagement.database.CreateVisitorHelper;
@@ -72,7 +70,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int REQUEST_CAMERA_DIALOG = 101;
     private static final int REQUEST_CODE_ASK_PERMISSIONS = 102;
-    private static final int REQUEST_STORE__LOCAL_DB = 103;
+    private static final int REQUEST_STORE_LOCAL_DB = 103;
 
 
     private static View timePicker;
@@ -80,12 +78,13 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             editTextDestinationPlace, editTextInTime, editTextOutTime;
     private TextInputLayout textInputName, textInputMobileNumber, textVehicleNumber, textInputFromPlace,
             textInputDestinationPlace, textInputInTime, textInputOutTime;
-    private TextView txtViewVisitorPhoto, txtViewVisitorSign;
+    private TextView txtBtnPhoto, txtBtnSignature , txtViewVisitorSign;
     private LinearLayout layoutVisitorForm, layoutSign, layoutPic;
     private String visitorImageFileName, signImageFileName;
     private String wbId;
     private ArrayList<String> visitorMandatoryFields;
-    private static String dateString;
+    //private static String dateString;
+    private ImageView imgVisitorPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,23 +101,23 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         showVisitorForm();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_date, menu);
-        menu.findItem(R.menu.menu_date).setVisible(false);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_date:
-                showDatePickerDialog();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_date, menu);
+//        menu.findItem(R.id.action_date).setVisible(false);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_date:
+//                showDatePickerDialog();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     /*
     public void addToMainLayout(AbstractFragment fragment, String tag, boolean stateLess) {
@@ -144,8 +143,11 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         layoutVisitorForm.addView(createVisitorLayout);
         layoutVisitorForm.setVisibility(View.VISIBLE);
 
+        ArrayList<View> visitorFieldviews = new ArrayList<>();
+
         editTextName = (EditText) createVisitorLayout.findViewById(R.id.editTextName);
         editTextName.setTag(Constants.NAME);
+
         editTextMobileNumber = (EditText) createVisitorLayout.findViewById(R.id.editTextMobileNumber);
         editTextMobileNumber.setTag(Constants.MOBILE_NO);
         editTextVehicleNumber = (EditText) createVisitorLayout.findViewById(R.id.editTextVehicleNumber);
@@ -160,19 +162,37 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         editTextOutTime.setTag(Constants.OUT_TIME);
 
         layoutPic = (LinearLayout) createVisitorLayout.findViewById(R.id.layoutPic);
-        txtViewVisitorPhoto = (TextView) createVisitorLayout.findViewById(R.id.txtViewVisitorPhoto);
-        txtViewVisitorPhoto.setTag(Constants.V_PHOTO);
+        imgVisitorPhoto = (ImageView) createVisitorLayout.findViewById(R.id.imgVisitorPhoto);
         txtViewVisitorSign = (TextView) createVisitorLayout.findViewById(R.id.txtViewVisitorSign);
-        txtViewVisitorSign.setTag(Constants.V_SIGNATURE_PHOTO);
 
 
+        txtBtnPhoto = (TextView) createVisitorLayout.findViewById(R.id.txtBtnPhoto);
+        txtBtnPhoto.setTag(Constants.V_PHOTO);
+        visitorFieldviews.add(txtBtnPhoto);
+        txtBtnSignature = (TextView) createVisitorLayout.findViewById(R.id.txtBtnSignature);
+        txtBtnSignature.setTag(Constants.V_SIGNATURE_PHOTO);
+        visitorFieldviews.add(txtBtnSignature);
         textInputName = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputName);
+        textInputName.setTag(Constants.NAME);
+        visitorFieldviews.add(textInputName);
         textInputMobileNumber = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputMobileNumber);
+        textInputMobileNumber.setTag(Constants.MOBILE_NO);
+        visitorFieldviews.add(textInputMobileNumber);
         textVehicleNumber = (TextInputLayout) createVisitorLayout.findViewById(R.id.textVehicleNumber);
+        textVehicleNumber.setTag(Constants.VEHICLE_NO);
+        visitorFieldviews.add(textVehicleNumber);
         textInputFromPlace = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputFromPlace);
+        textInputFromPlace.setTag(Constants.FROM_PLACE);
+        visitorFieldviews.add(textInputFromPlace);
         textInputDestinationPlace = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputDestinationPlace);
+        textInputDestinationPlace.setTag(Constants.DESTINATION_PLACE);
+        visitorFieldviews.add(textInputDestinationPlace);
         textInputInTime = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputInTime);
+        textInputInTime.setTag(Constants.IN_TIME);
+        visitorFieldviews.add(textInputInTime);
         textInputOutTime = (TextInputLayout) createVisitorLayout.findViewById(R.id.textInputOutTime);
+        textInputOutTime.setTag(Constants.OUT_TIME);
+        visitorFieldviews.add(textInputOutTime);
 
         //showReqFields();
 
@@ -210,6 +230,17 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
                     signatureView.clear();
             }
         });
+        hideOptionalFields(visitorFieldviews);
+    }
+
+    private void hideOptionalFields(ArrayList<View> visitorFieldviews) {
+        for (View view : visitorFieldviews) {
+            if (visitorMandatoryFields.contains(view.getTag().toString())) {
+                view.setVisibility(View.VISIBLE);
+            } else {
+                view.setVisibility(View.GONE);
+            }
+        }
     }
 
     private boolean isDeviceSupportCamera() {
@@ -275,9 +306,9 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         if (sourceName == REQUEST_CAMERA_DIALOG) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     REQUEST_CODE_ASK_PERMISSIONS);
-        } else if(sourceName == REQUEST_STORE__LOCAL_DB){
+        } else if (sourceName == REQUEST_STORE_LOCAL_DB) {
             storeDataToLocalDB(valuePassed);
-        }else {
+        } else {
             super.onPositiveButtonClicked(sourceName, valuePassed);
         }
     }
@@ -309,9 +340,8 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
 
                 String filePath = ImageUtil.storeBitMapToFile(bitmap, "visitor");
                 if (!UIUtil.isEmpty(filePath)) {
-                    SampleImageTask sampleImageTask = new SampleImageTask(filePath, txtViewVisitorPhoto, false);
+                    SampleImageTask sampleImageTask = new SampleImageTask(filePath, null, false);
                     sampleImageTask.execute();
-                    //setPic(filePath);
                 } else {
                     showToast("Sorry! Failed to capture image");
                 }
@@ -322,42 +352,44 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
                 // failed to capture image
                 showToast("Sorry! Failed to capture image");
             }
-        } else if (resultCode == NavigationCodes.RC_SINGNATURE) {
-            Bitmap signatureBitMapData = data.getParcelableExtra(Constants.SIGN_IMAGE_BYTE_DATA);
-            String filePath = ImageUtil.storeBitMapToFile(signatureBitMapData, "signature");
-            if (!UIUtil.isEmpty(filePath)) {
-                SampleImageTask sampleImageTask = new SampleImageTask(filePath, txtViewVisitorSign, true);
-                sampleImageTask.execute();
-                //setPic(filePath);
-            } else {
-                showToast("Sorry! Failed to capture signature");
-            }
         }
+
+//        else if (resultCode == NavigationCodes.RC_SINGNATURE) {
+//            Bitmap signatureBitMapData = data.getParcelableExtra(Constants.SIGN_IMAGE_BYTE_DATA);
+//            String filePath = ImageUtil.storeBitMapToFile(signatureBitMapData, "signature");
+//            if (!UIUtil.isEmpty(filePath)) {
+//                SampleImageTask sampleImageTask = new SampleImageTask(filePath, txtViewVisitorSign, true);
+//                sampleImageTask.execute();
+//                //setPic(filePath);
+//            } else {
+//                showToast("Sorry! Failed to capture signature");
+//            }
+//        }
     }
 
-    private void setPic(String imagePath, ImageView imageView) {
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        imageView.setImageBitmap(bitmap);
-    }
+//    private void setPic(String imagePath, ImageView imageView) {
+//        // Get the dimensions of the View
+//        int targetW = imageView.getWidth();
+//        int targetH = imageView.getHeight();
+//
+//        // Get the dimensions of the bitmap
+//        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+//        bmOptions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(imagePath, bmOptions);
+//        int photoW = bmOptions.outWidth;
+//        int photoH = bmOptions.outHeight;
+//
+//        // Determine how much to scale down the image
+//        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+//
+//        // Decode the image file into a Bitmap sized to fill the View
+//        bmOptions.inJustDecodeBounds = false;
+//        bmOptions.inSampleSize = scaleFactor;
+//        bmOptions.inPurgeable = true;
+//
+//        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+//        imageView.setImageBitmap(bitmap);
+//    }
 
     public Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(ImageUtil.getOutputMediaFile(type));
@@ -373,10 +405,12 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         showTimePickerDialog(view);
     }
 
+    /*
     private void showDatePickerDialog() {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
+    */
 
     private boolean isEditTextEmpty(EditText editText) {
         return editText.getText() == null || TextUtils.isEmpty(editText.getText().toString().trim());
@@ -470,37 +504,47 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             return;
         }
 
-        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextOutTime.getTag())) && UIUtil.isEmpty(visitorImageFileName)){
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(txtBtnPhoto.getTag()))
+                && UIUtil.isEmpty(visitorImageFileName)){
             showToast(getString(R.string.v_image_mandatory));
             return;
         }
 
-        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(editTextOutTime.getTag())) && UIUtil.isEmpty(signImageFileName)){
+        if(UIUtil.isMandatoryParam(visitorMandatoryFields, String.valueOf(txtBtnSignature.getTag()))
+                && UIUtil.isEmpty(signImageFileName)){
             showToast(getString(R.string.v_sign_mandatory));
             return;
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd ", Locale.getDefault());
+        String date = dateFormat.format(new Date());
+
         // Sending request
         final HashMap<String, String> payload = new HashMap<>();
         payload.put(Constants.WB_ID, wbId);
-        payload.put(Constants.NAME, editTextName.getText().toString());
-        payload.put(Constants.MOBILE_NO, editTextMobileNumber.getText().toString());
-        payload.put(Constants.FROM_PLACE, editTextFromPlace.getText().toString());
-        payload.put(Constants.DESTINATION_PLACE, editTextDestinationPlace.getText().toString());
-
-        String date;
-        if (UIUtil.isEmpty(dateString)) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd ", Locale.getDefault());
-            date = dateFormat.format(new Date());
-        } else {
-            date = dateString;
+        if (!UIUtil.isEmpty(editTextName.getText().toString())) {
+            payload.put(Constants.NAME, editTextName.getText().toString());
+        }
+        if (!UIUtil.isEmpty(editTextMobileNumber.getText().toString())) {
+            payload.put(Constants.MOBILE_NO, editTextMobileNumber.getText().toString());
+        }
+        if (!UIUtil.isEmpty(editTextVehicleNumber.getText().toString())) {
+            payload.put(Constants.VEHICLE_NO, editTextVehicleNumber.getText().toString());
+        }
+        if (!UIUtil.isEmpty(editTextFromPlace.getText().toString())) {
+            payload.put(Constants.FROM_PLACE, editTextFromPlace.getText().toString());
+        }
+        if (!UIUtil.isEmpty(editTextFromPlace.getText().toString())) {
+            payload.put(Constants.DESTINATION_PLACE, editTextDestinationPlace.getText().toString());
+        }
+        if (!UIUtil.isEmpty(editTextInTime.getText().toString())) {
+            payload.put(Constants.IN_TIME, date + editTextInTime.getText().toString() + ":00");
+        }
+        if (!UIUtil.isEmpty(editTextOutTime.getText().toString())) {
+            payload.put(Constants.OUT_TIME, date + editTextOutTime.getText().toString() + ":00");
         }
 
-        payload.put(Constants.IN_TIME, date+editTextInTime.getText().toString()+":00");
-        payload.put(Constants.OUT_TIME, date+editTextOutTime.getText().toString()+":00");
-        payload.put(Constants.VEHICLE_NO, editTextVehicleNumber.getText().toString());
-
-        createVisitor(new File(visitorImageFileName), new File(signImageFileName), payload);
+        createVisitor(visitorImageFileName, signImageFileName, payload);
     }
 
     private void storeDataToLocalDB(Bundle data){
@@ -508,38 +552,48 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
         String imagePath = data.getString(Constants.VISITOR_IMAGE_FILE);
         String signaturePath = data.getString(Constants.SIGN_IMAGE_FILE);
         HashMap<String, String> payload = (HashMap<String, String>)data.getSerializable(Constants.PARAMS);
-        CreateVisitorHelper.update(this, imagePath, signaturePath, gson.toJson(payload));
+        CreateVisitorHelper.update(this, imagePath, signaturePath, gson.toJson(payload), 1);
         showToast(getString(R.string.record_inserted));
-        /*
-        Gson gson = new Gson();
-        Type orderDataType = new TypeToken<ArrayList<CeeFeedbackOrderData>>() {
-        }.getType();
-        final ArrayList<CeeFeedbackOrderData> ceeFeedbackOrderDatas = gson.fromJson(orderDataString, orderDataType);
-        Type ceeReasonsType = new TypeToken<ArrayList<OrderCancelReason>>() {
-        }.getType();
-        ArrayList<OrderCancelReason> ceeFeedBackReasons = gson.fromJson(ceeFeedBackReasonsString, ceeReasonsType);
-         */
+        Intent intent = new Intent();
+        intent.putExtra(Constants.WB_ID, wbId);
+        setResult(NavigationCodes.RC_CREATED_VISITOR, intent);
+        finish();
     }
 
 
-    public void createVisitor(File visitorImage, File visitorSign, HashMap<String, String> payload) {
+    public void createVisitor(String visitorImageFileName, String signImageFileName, HashMap<String, String> payload) {
 
         if (!checkInternetConnection()) {
-           Bundle bundle = new Bundle();
-            bundle.putString(Constants.VISITOR_IMAGE_FILE, visitorImage.toString());
-            bundle.putString(Constants.SIGN_IMAGE_FILE, visitorSign.toString());
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.VISITOR_IMAGE_FILE, visitorImageFileName);
+            bundle.putString(Constants.SIGN_IMAGE_FILE, signImageFileName);
             bundle.putSerializable(Constants.PARAMS, payload);
             showAlertDialog(getString(R.string.store_to_local_db_title), getString(R.string.store_to_local_db),
-                    DialogButton.YES, DialogButton.CANCEL, REQUEST_STORE__LOCAL_DB, bundle, getString(R.string.insert));
+                    DialogButton.YES, DialogButton.CANCEL, REQUEST_STORE_LOCAL_DB, bundle, getString(R.string.insert));
             return;
         }
 
-        showProgressDialog(getString(R.string.please_wait), true);
-        RequestBody visitorImageRequestFile = RequestBody.create(MediaType.parse(MIME_TYPE), visitorImage);
-        MultipartBody.Part visitorImageBody = MultipartBody.Part.createFormData(Constants.VISITOR_IMAGE_FILE, visitorImage.getName(), visitorImageRequestFile);
 
-        RequestBody visitorSignRequestFile = RequestBody.create(MediaType.parse(MIME_TYPE), visitorSign);
-        MultipartBody.Part visitorSignBody = MultipartBody.Part.createFormData(Constants.SIGN_IMAGE_FILE, visitorSign.getName(), visitorSignRequestFile);
+        showProgressDialog(getString(R.string.please_wait), true);
+
+        MultipartBody.Part visitorImageBody, visitorSignBody;
+        if (UIUtil.isEmpty(visitorImageFileName)) {
+            visitorImageBody = null;
+        } else {
+            File visitorImage = new File(visitorImageFileName);
+            RequestBody visitorImageRequestFile = RequestBody.create(MediaType.parse(MIME_TYPE), visitorImage);
+            visitorImageBody = MultipartBody.Part.createFormData(Constants.VISITOR_IMAGE_FILE, visitorImage.getName(),
+                    visitorImageRequestFile);
+        }
+
+        if (UIUtil.isEmpty(signImageFileName)) {
+            visitorSignBody = null;
+        } else {
+            File visitorSign = new File(signImageFileName);
+            RequestBody visitorSignRequestFile = RequestBody.create(MediaType.parse(MIME_TYPE), visitorSign);
+            visitorSignBody = MultipartBody.Part.createFormData(Constants.SIGN_IMAGE_FILE, visitorSign.getName(),
+                    visitorSignRequestFile);
+        }
 
         ApiService apiService = ApiAdapter.getApiService(this);
         Call<ApiResponse> call = apiService.postVisitor(visitorImageBody, visitorSignBody, payload);
@@ -585,27 +639,27 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
 
     }
 
-    private void sampleImage(String filePath, TextView textView, boolean isSignatureImage) {
-        try {
-            Bitmap bmpPic = ImageUtil.getBitmap(filePath, this);
-            int compressQuality = 100; //PNG is a lossless format
-            FileOutputStream fos = new FileOutputStream(filePath);
-            if (bmpPic != null) {
-                bmpPic.compress(Bitmap.CompressFormat.PNG, compressQuality, fos);
-                fos.flush();
-                fos.close();
-                if (isSignatureImage){
-                    signImageFileName = filePath;
-                }else {
-                    visitorImageFileName = filePath;
-                }
-                textView.setText(filePath);
-            }
-
-        } catch (Exception e) {
-
-        }
-    }
+//    private void sampleImage(String filePath, TextView textView, boolean isSignatureImage) {
+//        try {
+//            Bitmap bmpPic = ImageUtil.getBitmap(filePath, this);
+//            int compressQuality = 100; //PNG is a lossless format
+//            FileOutputStream fos = new FileOutputStream(filePath);
+//            if (bmpPic != null) {
+//                bmpPic.compress(Bitmap.CompressFormat.PNG, compressQuality, fos);
+//                fos.flush();
+//                fos.close();
+//                if (isSignatureImage){
+//                    signImageFileName = filePath;
+//                }else {
+//                    visitorImageFileName = filePath;
+//                }
+//                textView.setText(filePath);
+//            }
+//
+//        } catch (Exception e) {
+//
+//        }
+//    }
 
     @Override
     public String getScreenTag() {
@@ -640,6 +694,7 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
     }
 
 
+    /*
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         @Override
@@ -658,8 +713,9 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             dateString = year + "" + (month + 1) + "" + day;
         }
     }
+    */
 
-    public class SampleImageTask extends AsyncTask<String, Void, Void> {
+    public class SampleImageTask extends AsyncTask<String, Void, ImageDataReturnModel> {
 
         private String path;
         private TextView textView;
@@ -671,64 +727,55 @@ public class CreateVisitorActivity extends BaseActivity implements ImageUtilAwar
             this.isSignatureImage = isSignatureImage;
         }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-//            if (isSuspended()) {
-//                cancel(true);
-//            } else {
-//                showProgressDialog(getString(R.string.please_wait), true);
-//            }
-        }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-//            if (!isSuspended()) {
-//                hideProgressDialog();
-//            } else {
-//                return;
-//            }
+        protected void onPostExecute(ImageDataReturnModel imageDataReturnModel) {
+            super.onPostExecute(imageDataReturnModel);
+            if(UIUtil.isEmpty(imageDataReturnModel.getFilePath()) ||
+                    imageDataReturnModel.getImageBitMap() == null) {
+                showToast("Sorry! Failed to capture image");
+                return;
+            }
+
+            if (!isSignatureImage) {
+                imgVisitorPhoto.setImageBitmap(imageDataReturnModel.getImageBitMap());
+                imgVisitorPhoto.setVisibility(View.VISIBLE);
+            } else {
+                textView.setText(imageDataReturnModel.getFilePath());
+                textView.setVisibility(View.VISIBLE);
+            }
+
             layoutVisitorForm.setVisibility(View.VISIBLE);
             layoutSign.setVisibility(View.GONE);
             layoutPic.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected Void doInBackground(String... params) {
-//            if (isCancelled()) {
-//                return null;
-//            }
-            sampleImage(path, textView, isSignatureImage);
-
-            return null;
+        protected ImageDataReturnModel doInBackground(String... params) {
+            return sampleImage(path, isSignatureImage);
         }
 
     }
 
-
-    /*
-    @Multipart
-    @POST("/upload")
-    void upload(@Part("myfile") TypedFile file,
-                @Part("description") String description,
-                Callback<String> cb);
-
-
-
-    TypedFile typedFile = new TypedFile("multipart/form-data", new File("path/to/your/file"));
-String description = "hello, this is description speaking";
-
-service.upload(typedFile, description, new Callback<String>() {
-    @Override
-    public void success(String s, Response response) {
-        Log.e("Upload", "success");
+    private ImageDataReturnModel sampleImage(String filePath, boolean isSignatureImage) {
+        ImageDataReturnModel imageDataReturnModel = null;
+        try {
+            Bitmap bmpPic = ImageUtil.getBitmap(filePath, this);
+            int compressQuality = 100; //PNG is a lossless format
+            FileOutputStream fos = new FileOutputStream(filePath);
+            if (bmpPic != null) {
+                bmpPic.compress(Bitmap.CompressFormat.PNG, compressQuality, fos);
+                fos.flush();
+                fos.close();
+                if (isSignatureImage) {
+                    signImageFileName = filePath;
+                } else {
+                    visitorImageFileName = filePath;
+                }
+                imageDataReturnModel = new ImageDataReturnModel(filePath, bmpPic);
+            }
+        } catch (Exception e) {
+        }
+        return imageDataReturnModel;
     }
-
-    @Override
-    public void failure(RetrofitError error) {
-        Log.e("Upload", "error");
-    }
-});
-     */
 }

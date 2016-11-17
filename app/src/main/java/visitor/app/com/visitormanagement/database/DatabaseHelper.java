@@ -45,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void initializeDatabase(SQLiteDatabase db) {
         db.execSQL(CreateVisitorHelper.CREATE_TABLE);
+        db.execSQL(WorkbookHelper.CREATE_TABLE);
     }
 
 }

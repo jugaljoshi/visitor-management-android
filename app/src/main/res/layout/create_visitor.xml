@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:orientation="vertical"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -204,10 +203,18 @@
                 android:visibility="gone"
                 android:layout_height="wrap_content">
 
+                <ImageView
+                    android:id="@+id/imgVisitorPhoto"
+                    android:layout_width="100dp"
+                    android:visibility="gone"
+                    android:scaleType="fitXY"
+                    android:layout_height="100dp" />
+
                 <TextView
                     android:id="@+id/txtViewVisitorPhoto"
                     android:layout_width="match_parent"
                     android:maxLines="1"
+                    android:visibility="gone"
                     android:textSize="@dimen/primary_text_size"
                     android:textColor="@color/colorAccent"
                     android:layout_height="wrap_content" />
@@ -216,6 +223,7 @@
                     android:id="@+id/txtViewVisitorSign"
                     android:layout_width="match_parent"
                     android:maxLines="1"
+                    android:visibility="gone"
                     android:textSize="@dimen/primary_text_size"
                     android:textColor="@color/colorAccent"
                     android:layout_height="wrap_content" />
@@ -235,6 +243,7 @@
 
                 <TextView
                     android:layout_width="0dp"
+                    android:id="@+id/txtBtnPhoto"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/padding_small"
@@ -251,6 +260,7 @@
 
                 <TextView
                     android:layout_width="0dp"
+                    android:id="@+id/txtBtnSignature"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/padding_small"
@@ -273,6 +283,8 @@
                 style="@style/ButtonPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
                 android:gravity="center"
                 android:onClick="onSaveButtonClick"
                 android:layout_marginTop="@dimen/margin_normal"
@@ -286,12 +298,5 @@
 
         </LinearLayout>
 
-        <!--<FrameLayout-->
-            <!--android:id="@+id/content_frame"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:visibility="gone"-->
-            <!--android:layout_height="match_parent" />-->
-
-    </LinearLayout>
-
-</ScrollView>
+    </ScrollView>
+</RelativeLayout>

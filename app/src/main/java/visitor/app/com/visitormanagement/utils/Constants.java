@@ -24,7 +24,6 @@ public class Constants {
     public static final String EXTRA_CREATE_WORKBOOK = "create_work_book";
 
 
-
     //workbook
     public static final String WB_IMG_URL = "wb_img_url";
     public static final String WB_NAME = "wb_name";
@@ -56,4 +55,5 @@ public class Constants {
     public static final String SIGN_IMAGE_BYTE_DATA = "visitorSignByteData";
 
     public static final String VISITORS = "visitors";
+    public static final String WORK_BOOK_RESPONSE = "Work_book_response";
 }

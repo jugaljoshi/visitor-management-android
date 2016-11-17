@@ -33,6 +33,10 @@ public interface ApiService {
     Call<ApiResponse<LoginApiResponse>> login(@Field(Constants.USER_NAME) String userName,
                                               @Field(Constants.PASSWORD) String password);
 
+    @FormUrlEncoded
+    @POST("create-workbook-type/")
+    Call<ApiResponse<WorkBookResponse>> createWorkBookType(@Field(Constants.WB_TYPE) String workBookTypeSlug);
+
     @GET("get-workbook/")
     Call<ApiResponse<ArrayList<WorkBookModel>>> getHomePageData();
 

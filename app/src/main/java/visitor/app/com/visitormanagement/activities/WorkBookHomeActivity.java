@@ -10,11 +10,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import retrofit2.Call;
 import visitor.app.com.visitormanagement.R;
 import visitor.app.com.visitormanagement.adapters.WorkBookHomePageAdapter;
+import visitor.app.com.visitormanagement.database.WorkbookHelper;
 import visitor.app.com.visitormanagement.interfaces.ApiService;
 import visitor.app.com.visitormanagement.interfaces.NavigationCodes;
 import visitor.app.com.visitormanagement.interfaces.OnWorkBookClickAware;
@@ -63,12 +67,23 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
     }
 
     private void getHomePageData() {
+        final ArrayList<WorkBookModel> workBookModelArrayList = WorkbookHelper.getVisitorRecords(this, -1);
         if (!checkInternetConnection()) {
-            getHandler().sendOfflineError(true);
+            showToast(getString(R.string.no_network_label));
+            // get data from data base where uploaded is 0
+            renderHomePageData(workBookModelArrayList);
             return;
         }
 
         showProgressDialog(getString(R.string.please_wait), true);
+
+        final HashMap<String, WorkBookModel> workBookStoredIdHashMap = new HashMap<>();
+        if(workBookModelArrayList != null && workBookModelArrayList.isEmpty()){
+            for(WorkBookModel workBookModel : workBookModelArrayList){
+                workBookStoredIdHashMap.put(workBookModel.getWbId(), workBookModel);
+            }
+        }
+
         ApiService apiService = ApiAdapter.getApiService(this);
         Call<ApiResponse<ArrayList<WorkBookModel>>> call = apiService.getHomePageData();
         call.enqueue(new NetworkCallback<ApiResponse<ArrayList<WorkBookModel>>>(this) {
@@ -76,8 +91,20 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
             public void onSuccess(ApiResponse<ArrayList<WorkBookModel>> workbookResponse) {
                 hideProgressDialog();
                 if (workbookResponse.status == 0) {
-                    ArrayList<WorkBookModel> workBookModelArrayList = workbookResponse.apiResponseContent;
-                    renderHomePageData(workBookModelArrayList);
+                    ArrayList<WorkBookModel> workBookModelResponseArrayList = workbookResponse.apiResponseContent;
+                    if (workBookModelResponseArrayList != null) {
+                        for (WorkBookModel workBookModelResponse : workBookModelResponseArrayList) {
+                            if (workBookStoredIdHashMap.containsKey(workBookModelResponse.getWbId())) {
+                                // Remove this model as this model is present in server response
+                                workBookStoredIdHashMap.remove(workBookModelResponse.getWbId());
+                            }
+                        }
+                        workBookModelResponseArrayList.addAll(workBookStoredIdHashMap.values());
+                        // store new response to DB
+                        storeDataToDB(workBookModelResponseArrayList);
+                    }
+
+                    renderHomePageData(workBookModelResponseArrayList);
                 } else {
                     handler.sendEmptyMessage(workbookResponse.status, workbookResponse.message);
                 }
@@ -95,6 +122,14 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
         });
     }
 
+    private void storeDataToDB(ArrayList<WorkBookModel> workBookModelArrayList) {
+        WorkbookHelper.deleteTableData(this);
+        for(WorkBookModel workBookModel : workBookModelArrayList){
+            WorkbookHelper.update(this, workBookModel.getWbName(), workBookModel.getWbId(),
+                    new Gson().toJson(workBookModel.getVisitorMandatoryFields()), 0);
+        }
+    }
+
     private void renderHomePageData(ArrayList<WorkBookModel> workBookModelArrayList) {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayout emptyLayoutView = (LinearLayout) findViewById(R.id.emptyLayoutView);
@@ -102,9 +137,10 @@ public class WorkBookHomeActivity extends BaseActivity implements OnWorkBookClic
         if (recyclerView == null || emptyLayoutView == null || layoutHomePage == null) return;
 
         if (workBookModelArrayList == null || workBookModelArrayList.isEmpty()) {
-            UIUtil.getEmptyPageView(emptyLayoutView, this);
+            UIUtil.getEmptyPageView(emptyLayoutView, this, true);
             layoutHomePage.setVisibility(View.GONE);
             emptyLayoutView.setVisibility(View.VISIBLE);
+            return;
         } else {
             layoutHomePage.setVisibility(View.VISIBLE);
             emptyLayoutView.setVisibility(View.GONE);

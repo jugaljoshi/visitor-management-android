@@ -18,10 +18,10 @@ public class WorkBookTypeModel implements Parcelable{
     }
 
     @SerializedName(Constants.WB_TYPE)
-    String wbType;
+    private String wbType;
 
     @SerializedName(Constants.WB_TYPE_ID)
-    String wbTypeId;
+    private String wbTypeId;
 
     public WorkBookTypeModel(Parcel source) {
         this.wbType = source.readString();

@@ -28,12 +28,16 @@ public class DatabaseContentProvider extends ContentProvider {
 
     public static final int VISITOR_URI_DATA_DIR = 101;
     public static final int VISITOR_URI_DATA_ITEM = 102;
+    public static final int WORKBOOK_URI_DATA_DIR = 103;
+    public static final int WORKBOOK_URI_DATA_ITEM = 104;
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sURIMatcher.addURI(AUTHORITY, CreateVisitorHelper.TABLE_NAME + "/", VISITOR_URI_DATA_DIR);
         sURIMatcher.addURI(AUTHORITY, CreateVisitorHelper.TABLE_NAME + "/#", VISITOR_URI_DATA_ITEM);
+        sURIMatcher.addURI(AUTHORITY, WorkbookHelper.TABLE_NAME + "/", WORKBOOK_URI_DATA_DIR);
+        sURIMatcher.addURI(AUTHORITY, WorkbookHelper.TABLE_NAME + "/#", WORKBOOK_URI_DATA_ITEM);
     }
 
     public DatabaseContentProvider() {
@@ -44,6 +48,15 @@ public class DatabaseContentProvider extends ContentProvider {
             case VISITOR_URI_DATA_ITEM:
                 String id = uri.getLastPathSegment();
                 String idSelection = CreateVisitorHelper.ID + " = '" + id + "'";
+                if (selection == null) {
+                    selection = idSelection;
+                } else {
+                    selection += " AND " + idSelection;
+                }
+                break;
+            case WORKBOOK_URI_DATA_ITEM:
+                id = uri.getLastPathSegment();
+                idSelection = WorkbookHelper.ID + " = '" + id + "'";
                 if (selection == null) {
                     selection = idSelection;
                 } else {
@@ -79,6 +92,10 @@ public class DatabaseContentProvider extends ContentProvider {
                 return CreateVisitorHelper.MIME_TYPE_DIR;
             case VISITOR_URI_DATA_ITEM:
                 return CreateVisitorHelper.MIME_TYPE_ITEM;
+            case WORKBOOK_URI_DATA_DIR:
+                return WorkbookHelper.MIME_TYPE_DIR;
+            case WORKBOOK_URI_DATA_ITEM:
+                return WorkbookHelper.MIME_TYPE_ITEM;
             default:
                 return null;
         }
@@ -176,6 +193,9 @@ public class DatabaseContentProvider extends ContentProvider {
             case VISITOR_URI_DATA_DIR:
             case VISITOR_URI_DATA_ITEM:
                 return CreateVisitorHelper.TABLE_NAME;
+            case WORKBOOK_URI_DATA_DIR:
+            case WORKBOOK_URI_DATA_ITEM:
+                return WorkbookHelper.TABLE_NAME;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }

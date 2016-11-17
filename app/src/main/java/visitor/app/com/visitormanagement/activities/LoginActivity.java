@@ -301,7 +301,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
     private void login(String email, String password){
         if (!checkInternetConnection()) {
-            getHandler().sendOfflineError(true);
+            showToast(getString(R.string.no_network_label));
             return;
         }
 

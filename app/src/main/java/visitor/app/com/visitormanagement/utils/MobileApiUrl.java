@@ -5,7 +5,7 @@ package visitor.app.com.visitormanagement.utils;
  */
 public final class MobileApiUrl {
     public static final String API_PATH = "/mapi/v1.0.0/";
-    public static final String DOMAIN_NAME = "http://visitor.pythonanywhere.com";
+    public static final String DOMAIN_NAME = "http://192.168.1.10:8080";
 
     private MobileApiUrl() {
     }

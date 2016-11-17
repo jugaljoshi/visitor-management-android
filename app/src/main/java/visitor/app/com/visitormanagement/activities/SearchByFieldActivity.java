@@ -38,9 +38,10 @@ import visitor.app.com.visitormanagement.utils.UIUtil;
 public class SearchByFieldActivity extends BaseActivity {
 
     private EditText editTextName, editTextMobileNumber, editTextVehicleNumber, editTextFromPlace,
-            editTextDestinationPlace, editTextInTime, editTextOutTime; //, editTextDatePicker;
-    private static View timePicker;//, datePicker;
-    private static String dateString;
+            editTextDestinationPlace, editTextInTime, editTextOutTime, editTextStartDatePicker,
+            editTextEndDatePicker;
+    private static View timePicker, datePicker;
+    //private static String dateString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +57,13 @@ public class SearchByFieldActivity extends BaseActivity {
         editTextDestinationPlace = (EditText) findViewById(R.id.editTextDestinationPlace);
         editTextInTime = (EditText) findViewById(R.id.editTextInTime);
         editTextOutTime = (EditText) findViewById(R.id.editTextOutTime);
-        //editTextDatePicker = (EditText) findViewById(R.id.editTextDatePicker);
+        editTextStartDatePicker = (EditText) findViewById(R.id.editTextStartDatePicker);
+        editTextEndDatePicker = (EditText) findViewById(R.id.editTextEndDatePicker);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_date, menu);
+        //getMenuInflater().inflate(R.menu.menu_date, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -91,11 +93,17 @@ public class SearchByFieldActivity extends BaseActivity {
         showTimePickerDialog(view);
     }
 
-//    public void onDatePickerClick(View view) {
-//        this.datePicker = view;
-//        DialogFragment newFragment = new DatePickerFragment();
-//        newFragment.show(getSupportFragmentManager(), "datePicker");
-//    }
+    public void onStartDatePickerClick(View view) {
+        this.datePicker = view;
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public void onEndDatePickerClick(View view) {
+        this.datePicker = view;
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
 
     private void showTimePickerDialog(View view) {
         DialogFragment newFragment = new TimePickerFragment();
@@ -145,7 +153,11 @@ public class SearchByFieldActivity extends BaseActivity {
             // Do something with the time chosen by the user
             //EditText editTextTimePicker = (EditText) datePicker;
             //editTextTimePicker.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-            dateString = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+            //dateString = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+
+
+            EditText editTextDatePicker = (EditText) datePicker;
+            editTextDatePicker.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
         }
     }
 
@@ -172,20 +184,47 @@ public class SearchByFieldActivity extends BaseActivity {
         payload.put(Constants.VEHICLE_NO, !isEditTextEmpty(editTextVehicleNumber) ? editTextVehicleNumber.getText().toString().trim() : null);
         */
 
-        String date;
-        if (UIUtil.isEmpty(dateString)) {
+        boolean includeTimeDate = false;
+        String startDate, endDate;
+        if (UIUtil.isEmpty(editTextStartDatePicker.getText().toString().trim())) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            date = dateFormat.format(new Date());
+            startDate = dateFormat.format(new Date());
         } else {
-            date = dateString;
+            includeTimeDate = true;
+            startDate = editTextStartDatePicker.getText().toString().trim();
         }
+
+        if (UIUtil.isEmpty(editTextEndDatePicker.getText().toString().trim())) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            endDate = dateFormat.format(new Date());
+        } else {
+            includeTimeDate = true;
+            endDate = editTextEndDatePicker.getText().toString().trim();
+        }
+
+        String inTime, outTime;
+        if (isEditTextEmpty(editTextInTime)) {
+            inTime = "00:00:00";
+        } else {
+            includeTimeDate = true;
+            inTime = editTextInTime.getText().toString().trim() + ":00";
+        }
+        if (isEditTextEmpty(editTextOutTime)) {
+            outTime = "23:59:59";
+        } else {
+            includeTimeDate = true;
+            outTime = editTextOutTime.getText().toString().trim() + ":00";
+        }
+        String inTimeDate = startDate + " " + inTime;
+        String outTimeDate = endDate + " " + outTime;
+
 
         searchVisitor(!isEditTextEmpty(editTextName) ? editTextName.getText().toString().trim() : null,
                 !isEditTextEmpty(editTextMobileNumber) ? editTextMobileNumber.getText().toString().trim() : null,
                 !isEditTextEmpty(editTextFromPlace) ? editTextFromPlace.getText().toString().trim() : null,
                 !isEditTextEmpty(editTextDestinationPlace) ? editTextDestinationPlace.getText().toString() : null,
-                !isEditTextEmpty(editTextInTime) ? date + " " + editTextInTime.getText().toString().trim() + ":00" : null,
-                !isEditTextEmpty(editTextOutTime) ? date + " " + editTextOutTime.getText().toString().trim() + ":00" : null,
+                includeTimeDate ? inTimeDate : null,
+                includeTimeDate ? outTimeDate : null,
                 !isEditTextEmpty(editTextVehicleNumber) ? editTextVehicleNumber.getText().toString().trim() : null);
     }
 
@@ -193,13 +232,13 @@ public class SearchByFieldActivity extends BaseActivity {
                               String inTime, String outTime, String vehicleNumber) {
 
         if (UIUtil.isEmpty(name) && UIUtil.isEmpty(mobileNumber) && UIUtil.isEmpty(fromPlace) && UIUtil.isEmpty(destPlace)
-                && UIUtil.isEmpty(inTime) && UIUtil.isEmpty(outTime) && UIUtil.isEmpty(vehicleNumber)) {
-            showToast(getString(R.string.fill_at_least_one_field));
-            return;
+                && UIUtil.isEmpty(vehicleNumber) && UIUtil.isEmpty(inTime) && UIUtil.isEmpty(outTime)) {
+                showToast(getString(R.string.fill_at_least_one_field));
+                return;
         }
 
         if (!checkInternetConnection()) {
-            getHandler().sendOfflineError(true);
+            showToast(getString(R.string.no_network_label));
             return;
         }
 

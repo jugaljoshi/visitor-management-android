@@ -138,84 +138,132 @@
                     android:textSize="@dimen/secondary_text_size" />
             </android.support.design.widget.TextInputLayout>
 
-            <!--<android.support.design.widget.TextInputLayout-->
-                <!--android:id="@+id/textInputDate"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="@dimen/margin_normal"-->
-                <!--android:layout_marginRight="@dimen/margin_normal"-->
-                <!--android:layout_marginTop="@dimen/margin_small"-->
-                <!--android:theme="@style/TextInputLayoutStyle"-->
-                <!--app:errorTextAppearance="@style/ErrorStyle">-->
-
-                <!--<EditText-->
-                    <!--android:id="@+id/editTextDatePicker"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:ems="10"-->
-                    <!--android:hint="@string/date"-->
-                    <!--android:inputType="date"-->
-                    <!--android:onClick="onDatePickerClick"-->
-                    <!--android:focusable="false"-->
-                    <!--android:paddingLeft="@dimen/padding_small"-->
-                    <!--android:paddingRight="@dimen/padding_small"-->
-                    <!--android:textColor="@color/uiv3_address_input_color"-->
-                    <!--android:textColorHint="@color/uiv3_secondary_text_color"-->
-                    <!--android:textSize="@dimen/secondary_text_size" />-->
-            <!--</android.support.design.widget.TextInputLayout>-->
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputInTime"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_normal"
-                android:layout_marginRight="@dimen/margin_normal"
-                android:layout_marginTop="@dimen/margin_small"
-                android:theme="@style/TextInputLayoutStyle"
-                app:errorTextAppearance="@style/ErrorStyle">
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/editTextInTime"
-                    android:layout_width="match_parent"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputEditTextStartDatePicker"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/in_time"
-                    android:focusable="false"
-                    android:inputType="time"
-                    android:onClick="onInTimeClick"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:textColor="@color/uiv3_address_input_color"
-                    android:textColorHint="@color/uiv3_secondary_text_color"
-                    android:textSize="@dimen/secondary_text_size" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginRight="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:theme="@style/TextInputLayoutStyle"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <EditText
+                        android:id="@+id/editTextStartDatePicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/start_date"
+                        android:focusable="false"
+                        android:inputType="date"
+                        android:onClick="onStartDatePickerClick"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        android:textColor="@color/uiv3_address_input_color"
+                        android:textColorHint="@color/uiv3_secondary_text_color"
+                        android:textSize="@dimen/secondary_text_size" />
+                </android.support.design.widget.TextInputLayout>
 
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputOutTime"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputEditTextEndDatePicker"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginRight="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:theme="@style/TextInputLayoutStyle"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <EditText
+                        android:id="@+id/editTextEndDatePicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/end_date"
+                        android:inputType="date"
+                        android:onClick="onEndDatePickerClick"
+                        android:focusable="false"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        android:textColor="@color/uiv3_address_input_color"
+                        android:textColorHint="@color/uiv3_secondary_text_color"
+                        android:textSize="@dimen/secondary_text_size" />
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_normal"
-                android:layout_marginRight="@dimen/margin_normal"
-                android:layout_marginTop="@dimen/margin_small"
-                android:theme="@style/TextInputLayoutStyle"
-                app:errorTextAppearance="@style/ErrorStyle">
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/editTextOutTime"
-                    android:layout_width="match_parent"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputInTime"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/out_time"
-                    android:inputType="time"
-                    android:onClick="onOutTimeClick"
-                    android:focusable="false"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:textColor="@color/uiv3_address_input_color"
-                    android:textColorHint="@color/uiv3_secondary_text_color"
-                    android:textSize="@dimen/secondary_text_size" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginRight="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:theme="@style/TextInputLayoutStyle"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <EditText
+                        android:id="@+id/editTextInTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/in_time"
+                        android:focusable="false"
+                        android:inputType="time"
+                        android:onClick="onInTimeClick"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        android:textColor="@color/uiv3_address_input_color"
+                        android:textColorHint="@color/uiv3_secondary_text_color"
+                        android:textSize="@dimen/secondary_text_size" />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputOutTime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginRight="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:theme="@style/TextInputLayoutStyle"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <EditText
+                        android:id="@+id/editTextOutTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/out_time"
+                        android:inputType="time"
+                        android:onClick="onOutTimeClick"
+                        android:focusable="false"
+                        android:paddingLeft="@dimen/padding_small"
+                        android:paddingRight="@dimen/padding_small"
+                        android:textColor="@color/uiv3_address_input_color"
+                        android:textColorHint="@color/uiv3_secondary_text_color"
+                        android:textSize="@dimen/secondary_text_size" />
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
